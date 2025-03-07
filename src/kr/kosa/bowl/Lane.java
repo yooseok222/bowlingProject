@@ -22,18 +22,29 @@ public class Lane {
 	Scanner sc = new Scanner(System.in);
 
 	/* Lane 생성자 */
-	public Lane(Game game) {
-		
-		this.game = game;  // 게임 객체 초기화
-        this.orderMenuList = new ArrayList<>();
+	public Lane() {
 
-        inputHeadAndShoes();  // 인원수 및 신발 갯수 입력 메서드 호출
-        selectGameOrSnack();  // 간식 또는 게임 선택 메서드 호출
+		this.game = new Game();
+		this.orderMenuList = new ArrayList<>();
+
+	}
+
+	/* 🎮 게임을 시작하는 메서드 */
+    public void startLane() {
+        inputHeadAndShoes();  // 인원 및 신발 선택
+        
+        boolean isGameFinished = false; // 게임이 끝났는지 확인하는 플래그
+
+        while (!isGameFinished) {  
+            isGameFinished = selectSnackOrBowl();  // 간식 또는 게임 선택
+        }
+
+        showReceipt();  // 🎯 모든 과정이 끝난 후 영수증 출력
     }
-	
-	/*인원수 및 신발 갯수 입력 메서드*/
+
+	// 1. 인원수 입력 및 신발선택
 	private void inputHeadAndShoes() {
-		
+
 		// 인원수 입력 (예외 처리 완료)
 		while (true) {
 			try {
@@ -48,8 +59,7 @@ public class Lane {
 				System.out.println("유효한 숫자를 입력하세요.");
 			}
 		}
-	
-	
+
 		// 신발 갯수 입력 (예외 처리 완료)
 		while (true) {
 			try {
@@ -66,35 +76,35 @@ public class Lane {
 			}
 		}
 		orderMenuList = new ArrayList<>();
-		
-		
+
 		// this.selectedAt =
 		// LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 
 	}
 
-	/*간식 또는 게임 선택 메서드*/
-	private void selectGameOrSnack() {
-
+	// 2. 간식먹을지 게임할지 메서드
+	private boolean selectSnackOrBowl() {
 		while (true) {
 			try {
-				System.out.println("1. 간식구매");
-				System.out.println("2. 게임시작");
-				int gameOrSnackChoice = Integer.parseInt(sc.nextLine().trim());
+				System.out.println("\n========== 선택 ==========");
+				System.out.println("1. 간식 구매 🍿");
+				System.out.println("2. 게임 시작 🎳"); 
+				System.out.println("3. 결제 및 종료 🧾");
+                System.out.print("선택하세요 (1, 2 또는 3) : ");
+				int cmd = Integer.parseInt(sc.nextLine().trim());
 
-				if (gameOrSnackChoice == 1) {
-					orderMenuList = new ArrayList<>();
-					Order order = OrderFactory.createOrder();
-					Map<String, Integer> orderedMenu = order.orderMenu();
-					orderMenuList.add(orderedMenu);
-					System.out.println("간식이 추가되었습니다.");
-					// 일단 주석
-					game.Start(this.headCnt, this.shoesCnt);
-				} else if (gameOrSnackChoice == 2) {
-					game.Start(this.headCnt, this.shoesCnt);
-				} else {
-					System.out.println("1 또는 2를 입력해주세요.");
-					continue;
+				if (cmd == 1) {
+					// 간식
+					selectSnack();
+					 return false; // 게임 종료 아님
+				} else if (cmd == 2) {
+					// 게임시작
+					selectBowl();
+					return false; // 게임 종료 아님
+				} else if (cmd == 3) {
+                    return true; // 게임 종료
+                } else {
+                	System.out.println("⚠ 1, 2 또는 3을 입력해주세요.");
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("유효한 숫자를 입력하세요.");
@@ -102,18 +112,29 @@ public class Lane {
 		}
 	}
 
-	/*
-	 * @Override public String toString() { return "headCnt : " + headCnt +
-	 * " shoesCnt : " + shoesCnt + " selectedAt : " + selectedAt; }
-	 */
-	/*
-	 * // 인원수 선택 및 신발대여 여부 public void useLane() { // 메뉴 주문할때 마다 해줘야함 메뉴를 가지고오고 싶으면
-	 * 사용 orderMenuList = new ArrayList<>(); Order order =
-	 * OrderFactory.createOrder(); Map<String, Integer> orderedMenu =
-	 * order.orderMenu(); orderMenuList.add(orderedMenu);
-	 * 
-	 * 
-	 * }
-	 */
+	// 2-1.간식 메서드
+	private void selectSnack() {
+		orderMenuList = new ArrayList<>();
+		Order order = OrderFactory.createOrder();
+		Map<String, Integer> orderedMenu = order.orderMenu();
+		orderMenuList.add(orderedMenu);
+
+	}
+
+	// 2-2.게임 메서드
+	private void selectBowl() {
+		game.start(this.headCnt, this.shoesCnt);
+
+		
+		// 게임이 끝난 후 다시 선택하도록 루프 유지
+		System.out.println("\n🎮 게임이 종료되었습니다! 다시 선택해주세요.");
+	}
+	
+	/* 3. 결제 및 영수증 출력 */
+    private void showReceipt() {
+        System.out.println("\n🧾 영수증을 생성합니다...");
+        Receipt receipt = new Receipt(this); // 현재 Lane 객체를 전달
+        receipt.showReceipt();
+    }
 
 }
