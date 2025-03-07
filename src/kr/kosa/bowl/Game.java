@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import kr.kosa.bowl.factory.OrderFactory;
+
 public class Game {
 	static int TOTAL_ROUNDS = 2;
 	List<Integer>[] board;
@@ -117,8 +119,10 @@ public class Game {
 				
 				break;
 			} catch ( NumberFormatException e) {
+				orderMenuList = new ArrayList<>();
 				// 간식 주문
-				
+				Order order = OrderFactory.createOrder();
+				orderMenuList.add(order.orderMenu());
 			}
 		}
 		
