@@ -9,7 +9,7 @@ public class Game {
    int gameRoundNum = 2;
    List<Integer>[] board;
 
-   public void Start(int headCnt, int shoseNum) {
+   public void start(int headCnt, int shoseNum) {
       board = new ArrayList[headCnt];
       String[] beforeScore = new String[headCnt];
       int[] totalScore = new int[headCnt];
