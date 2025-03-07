@@ -4,55 +4,56 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import kr.kosa.bowl.exception.OrderException;
 import lombok.Data;
 
 @Data
 public class Order {
 	private Map<String, Integer> orderMap;
 	private Map<String, Snack> snackMap;
+	private Scanner sc;
 
 	// 생성자
 	public Order() {
+		sc = new Scanner(System.in);
 		snackMap = SnackFile.readSnackFile(); // 파일 읽기
 		orderMap = new HashMap<>();
 	}
 
 	// 상품 주문
 	public Map<String, Integer> orderMenu() {
-		try (Scanner sc = new Scanner(System.in)) { // try-with-resources 사용
-			while (true) {
-				System.out.println("주문 메뉴에 오신 걸 환영합니다.");
-				System.out.println("입력하신 번호로 메뉴를 선택해주세요.");
-				System.out.println("1. 전체 메뉴 조회");
-				System.out.println("2. 장바구니에 메뉴 담기");
-				System.out.println("3. 현재 장바구니 현황 보기");
-				System.out.println("4. 주문을 종료하고 게임으로 돌아가기");
+		while (true) {
+			System.out.println("주문 메뉴에 오신 걸 환영합니다.");
+			System.out.println("입력하신 번호로 메뉴를 선택해주세요.");
+			System.out.println("1. 전체 메뉴 조회");
+			System.out.println("2. 장바구니에 메뉴 담기");
+			System.out.println("3. 현재 장바구니 현황 보기");
+			System.out.println("4. 주문을 종료하고 게임으로 돌아가기");
 
-				try {
-					int command = Integer.parseInt(sc.nextLine());
+			try {
+				int command = Integer.parseInt(sc.nextLine().trim());
 
-					switch (command) {
-					case 1:
-						printSnackMap();
-						break;
-					case 2:
-						orderSnack(sc); // Scanner를 인자로 넘김
-						break;
-					case 3:
-						printOrderMap();
-						break;
-					case 4:
-						System.out.println("주문이 모두 종료되었습니다.");
-						SnackFile.makeSnackFile(snackMap); // 변경 사항 저장
-						return orderMap;
-					default:
-						throw new OrderException("잘못된 번호입니다. 1~4 사이의 숫자를 입력하세요.");
-					}
-				} catch (NumberFormatException e) {
-					System.err.println("[ERROR] 숫자 입력이 필요합니다.");
-				} catch (OrderException e) {
-					System.err.println("[ERROR] " + e.getMessage());
+				switch (command) {
+				case 1:
+					printSnackMap();
+					break;
+				case 2:
+					orderSnack(); // Scanner를 인자로 넘김
+					break;
+				case 3:
+					printOrderMap();
+					break;
+				case 4:
+					System.out.println("주문이 모두 종료되었습니다.");
+					SnackFile.makeSnackFile(snackMap); // 변경 사항 저장
+					return orderMap;
+				default:
+					throw new OrderException("잘못된 번호입니다. 1~4 사이의 숫자를 입력하세요.");
 				}
+			} catch (NumberFormatException e) {
+				System.err.println("[ERROR] 숫자 입력이 필요합니다.");
+			} catch (OrderException e) {
+				System.err.println("[ERROR] " + e.getMessage());
 			}
 		}
 	}
@@ -76,17 +77,17 @@ public class Order {
 	}
 
 	// 장바구니에 간식 추가
-	private void orderSnack(Scanner sc) {
+	private void orderSnack() {
 		try {
 			System.out.println("추가하실 메뉴명을 입력해주세요.");
-			String snackName = sc.nextLine();
+			String snackName = sc.nextLine().trim();
 
 			if (!snackMap.containsKey(snackName)) {
 				throw new OrderException("존재하지 않는 메뉴입니다: " + snackName);
 			}
 
 			System.out.println("주문하실 수량을 입력해주세요.");
-			int snackCnt = Integer.parseInt(sc.nextLine());
+			int snackCnt = Integer.parseInt(sc.nextLine().trim());
 
 			Snack orderedSnack = snackMap.get(snackName); // 주문받은 메뉴
 

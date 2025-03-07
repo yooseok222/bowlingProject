@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class Lane {
