@@ -16,8 +16,12 @@ public class Game {
 	List<Integer>[] board;
 	int[][] roundScore;
 	private List<Map<String, Integer>> orderMenuList;
+	
+	Game() {
+		orderMenuList = new ArrayList<>();
+	}
 
-	public void start(int headCnt, int shoesNum) {
+	public List<Map<String, Integer>> start(int headCnt, int shoesNum) {
 		board = new ArrayList[headCnt];
 		roundScore = new int[headCnt][TOTAL_ROUNDS];
 
@@ -103,6 +107,8 @@ public class Game {
 
 		System.out.println("\n🎳 게임이 끝났습니다! 다음에 또 봐요~");
 		displayScore();
+		
+		return orderMenuList;
 	}
 
 	private int rollBall(Scanner sc, int maxPins) {
@@ -120,7 +126,6 @@ public class Game {
 
 				break;
 			} catch (NumberFormatException e) {
-				orderMenuList = new ArrayList<>();
 				// 간식 주문
 				Order order = OrderFactory.createOrder();
 				orderMenuList.add(order.orderMenu());
