@@ -149,15 +149,15 @@ public class Manager {
 			switch(input) {
 				case "1" : updateSnackName(getSnack, snackName);
 					break;
-				case "2" : updateSnackPrice(getSnack);
+				case "2" : updateSnackPrice(snackName);
 					break;
 				case "0" : getAdminMenu();
 					break;
 				default : System.out.println("잘못 입력하셨습니다.");
 					break;
 			}
-			
-		}
+			 
+		} 
 		
 	};
 
@@ -212,21 +212,31 @@ public class Manager {
 	/** 상품 이름 수정
 	 * @param getSnack, snackName */
 	private void updateSnackName(Map<String, Snack> getSnack, String snackName) {
-		System.out.println("수정하실 상품의 이름을 입력해주세요");
+		System.out.print("수정하실 상품의 새 이름을 입력해주세요");
 		String newName = sc.nextLine();
 		
-		Snack snack = snackMenu.remove(snackName);
-		if(snack != null) {
-			snack.setSnackName(newName);			
-			snackMenu.put(newName, snack);
-			System.out.println(snackMenu.get(newName).getSnackPrice());
+		Snack snackNameChanged = snackMenu.remove(snackName);
+		if(snackNameChanged != null) {
+			snackNameChanged.setSnackName(newName);			
+			snackMenu.put(newName, snackNameChanged);
 			SnackFile.makeSnackFile(snackMenu);
 		}
+		System.out.println("상품 이름 수정이 완료되었습니다.");
 	}
 	
-	/** 상품 가격 수정*/
-	private void updateSnackPrice(Map<String, Snack> snack) {
-		
+	/** 상품 가격 수정
+	 * @param snackName */
+	private void updateSnackPrice(String snackName) {
+		System.out.print("수정하실 상품의 새 가격을 입력해주세요 : ");
+		int newPrice = Integer.parseInt(sc.nextLine());
+	
+		Snack snackPriceChanged = snackMenu.get(snackName);
+		if(snackPriceChanged != null) {
+			snackPriceChanged.setSnackPrice(newPrice);
+			snackMenu.put(snackName, snackPriceChanged);
+			SnackFile.makeSnackFile();
+		}
+		System.out.println("상품 가격 수정이 완료되었습니다.");
 	}
 	
 	/** 전체 매출 조회 */
