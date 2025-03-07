@@ -159,11 +159,13 @@ public class Manager {
 		System.out.print("검색하실 상품 이름을 입력하세요 : ");
 		String snackName = sc.nextLine();
 		
-//		for(Snack e : snackList) {
-//			if(snackName.equals(e.getSnackName())) {
-//				System.out.println("상품명 : " + e.getSnackName() + " | 가격 : " + e.getSnackPrice() + " | 수량 : " + e.getSnackCnt());
-//			}
-//		}
+		 for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
+			if(e.getKey().contains(snackName)) {
+				System.out.println("상품명 : " + e.getValue().getSnackName() + 
+						" | 가격 : " + e.getValue().getSnackPrice() + 
+						" | 수량 : " + e.getValue().getSnackCnt());
+			}
+		}
 	};
 	
 	/** 전체 매출 조회 */
