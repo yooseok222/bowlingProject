@@ -1,9 +1,13 @@
 package kr.kosa.bowl;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
+import kr.kosa.bowl.factory.OrderFactory;
 
 public class Lane {
 	private int laneNum; // 레인넘버
@@ -12,6 +16,8 @@ public class Lane {
 	private boolean isClean; // 청소여부
 	private String selectedAt; // 레인선택시간
 	private int gameCnt; // 게임카운트
+	private Game game;		//게임객체
+	private List<Map<String, Integer>> orderMenuList;
 
 	public Lane() {
 
@@ -24,7 +30,9 @@ public class Lane {
 
 
 		this.selectedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
-
+		
+		orderMenuList = new ArrayList<>();
+		
 	}
 
 	@Override
@@ -34,6 +42,9 @@ public class Lane {
 
 	// 인원수 선택 및 신발대여 여부
 	public void useLane() {
-
+		Order order = OrderFactory.createOrder();
+		Map<String, Integer>orderedMenu = order.orderMenu();
+		orderMenuList.add(orderedMenu);
+		
 	}
 }
