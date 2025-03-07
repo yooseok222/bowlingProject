@@ -114,7 +114,7 @@ public class Manager {
 		snackMenu.put(snackName, snack);
 		SnackFile.makeSnackFile(snackMenu);
 		
-		System.out.println("상품 추가되었습니다.");
+		System.out.println("상품이 추가되었습니다.");
 	};
 	
 
@@ -147,7 +147,7 @@ public class Manager {
 			System.out.println("1. 이름 수정 | 2. 가격 수정 | 0. 관리자 메뉴로 돌아가기");
 			String input = sc.nextLine();
 			switch(input) {
-				case "1" : updateSnackName(getSnack, snackName);
+				case "1" : updateSnackName(snackName);
 					break;
 				case "2" : updateSnackPrice(snackName);
 					break;
@@ -191,9 +191,9 @@ public class Manager {
 						" | 수량 : " + e.getValue().getSnackCnt());
 			}
 		}
-	};
+	}; 
 	
-	
+	 
 	/** 상품 수정시 수정할 상품 검색 
 	 * @param snackName */
 	private Map getSnackByName(String snackName) {
@@ -211,32 +211,50 @@ public class Manager {
 	
 	/** 상품 이름 수정
 	 * @param getSnack, snackName */
-	private void updateSnackName(Map<String, Snack> getSnack, String snackName) {
-		System.out.print("수정하실 상품의 새 이름을 입력해주세요");
-		String newName = sc.nextLine();
+	private void updateSnackName(String snackName) {
 		
-		Snack snackNameChanged = snackMenu.remove(snackName);
-		if(snackNameChanged != null) {
-			snackNameChanged.setSnackName(newName);			
-			snackMenu.put(newName, snackNameChanged);
-			SnackFile.makeSnackFile(snackMenu);
-		}
-		System.out.println("상품 이름 수정이 완료되었습니다.");
+		
+		String newName = "";
+		
+		do {
+			System.out.print("수정하실 상품의 새 이름을 입력해주세요");
+			
+			newName = sc.nextLine();
+			
+			if(newName.isBlank()) { //상품명을 입력하지 않았거나, 공백인 경우 에러메시지 반환
+				System.err.println("상품명이 입력되지 않았습니다.");
+			}else {
+				Snack snackNameChanged = snackMenu.remove(snackName);
+				if(snackNameChanged != null) {
+					snackNameChanged.setSnackName(newName);			
+					snackMenu.put(newName, snackNameChanged);
+					SnackFile.makeSnackFile(snackMenu);
+				}
+				System.out.println("상품 이름 수정이 완료되었습니다.");	
+			}	
+		
+		}while(newName.isBlank());
+		
+		
 	}
 	
 	/** 상품 가격 수정
 	 * @param snackName */
 	private void updateSnackPrice(String snackName) {
 		System.out.print("수정하실 상품의 새 가격을 입력해주세요 : ");
-		int newPrice = Integer.parseInt(sc.nextLine());
-	
-		Snack snackPriceChanged = snackMenu.get(snackName);
-		if(snackPriceChanged != null) {
-			snackPriceChanged.setSnackPrice(newPrice);
-			snackMenu.put(snackName, snackPriceChanged);
-			SnackFile.makeSnackFile();
+		try {
+			int newPrice = Integer.parseInt(sc.nextLine());			
+			Snack snackPriceChanged = snackMenu.get(snackName);
+			if(snackPriceChanged != null) {
+				snackPriceChanged.setSnackPrice(newPrice);
+				snackMenu.put(snackName, snackPriceChanged);
+				SnackFile.makeSnackFile();
+			}
+			System.out.println("상품 가격 수정이 완료되었습니다.");
+		} catch (NumberFormatException e) {
+			System.err.println("가격이 입력되지 않았습니다.");
 		}
-		System.out.println("상품 가격 수정이 완료되었습니다.");
+
 	}
 	
 	/** 전체 매출 조회 */
