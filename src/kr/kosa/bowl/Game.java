@@ -9,25 +9,21 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Game {
-	static int gameRoundNum = 2;
+	static int TOTAL_ROUNDS = 2;
 	List<Integer>[] board;
 	int[][] roundScore;
 
-	public void Start(int headCnt, int shoseNum) {
+	public void start(int headCnt, int shoesNum) {
 		board = new ArrayList[headCnt];
-		roundScore = new int[headCnt][gameRoundNum];
-		
-		// 총 점수
-		int[] totalScore = new int[headCnt];
-		// 스트라이크, 스페어 여부
-		String[] beforeScore = new String[headCnt];
-		
-		Arrays.fill(totalScore, 0);
-		Arrays.fill(beforeScore, "");
+		roundScore = new int[headCnt][TOTAL_ROUNDS];
 
+		// board 넣어주기
 		for (int i = 0; i < headCnt; i++) {
 			board[i] = new ArrayList<Integer>();
 		}
+
+		// 스트라이크, 스페어 여부
+		char[] beforeScore = new char[headCnt];
 
 		// 게임 시작 >> 출력
 		System.out.println("환영합니다! 볼링 게임을 시작합니다!");
@@ -35,121 +31,143 @@ public class Game {
 
 		Scanner sc = new Scanner(System.in);
 
-		for (int round = 0; round < gameRoundNum; round++) {
+		for (int round = 0; round < TOTAL_ROUNDS; round++) {
 			for (int player = 0; player < headCnt; player++) {
-				System.out.println("player " + player);
+				System.out.println("\n🎳 Player " + (player + 1) + "의 차례입니다!");
 
+				roundScore[player][round] = round > 0 ? roundScore[player][round - 1] : 0;
 				int score = 0;
-				int r = 0;
+				int roll = 0;
 				int pin = 10;
+				boolean isStrike = false;
 				// 점수 계산
-				while (r < 2) {
-					System.out.println("굴리세요");
-					if (beforeScore[player].equals("sq")) { // 이전에 스페어
-						totalScore[player] += score;
-					}
+				while (roll < 2) {
+					displayScore();
 
-					// 랜덤 int
-					int pinNum = (int) (Math.random() * pin) + 1;
-					System.out.println(pin + "이하의 숫자만 입력하세요");
-					// 입력 int
-					int inputNum = Integer.parseInt(sc.nextLine());
-
-					int nowScore = pin - Math.abs(pinNum - inputNum);
+					int nowScore = rollBall(sc, pin);
 					score += nowScore;
 					pin -= nowScore;
 
-					System.out.println(nowScore);
+					if (isStrike)
+						board[player].add(0);
+					else
+						board[player].add(nowScore);
+
+					if (beforeScore[player] == '/' && roll == 0) { // 이전에 스페어
+						roundScore[player][round] += nowScore;
+					} else if (beforeScore[player] == 'x' && roll == 1) { // 이전에 스트라이크
+						roundScore[player][round] += score;
+					}
 
 					if (score == 10) {
-						if (r == 0) {
-							System.out.println("스트라이크!");
-							beforeScore[player] = "st";
-							break;
+						if (roll == 0) {
+							System.out.println("🎯 스트라이크!");
+							beforeScore[player] = 'x';
+							isStrike = true;
 						} else {
-							System.out.println("스페어!");
-							beforeScore[player] = "sq";
+							System.out.println("🎳 스페어!");
+							beforeScore[player] = '/';
 						}
 					} else {
-						if (r == 1)
-							System.out.println("총" + score + "개의 볼링 핀을 쓰러뜨렸습니다!");
+						beforeScore[player] = ' ';
 					}
-					
-					board[player].add(nowScore);
-					r++;
+
+					roll++;
 				}
 
-				
+				roundScore[player][round] += score;
 
-				if (beforeScore[player].equals("st")) { // 이전에 스트라이크
-					totalScore[player] += score * 2;
-				} else {
-					totalScore[player] += score;
-				}
-				
 				// 전설 신발
-				if (player < shoseNum) {
-					System.out.println("전설신발");
-					totalScore[player] += 1;
-				}
+				applyShoeBonus(player, shoesNum, round);
 
 				// 마지막 라운드인데 스트라이크/스페어 함
-				if (round == gameRoundNum - 1 && score >= 10) {
-					System.out.println("보너스 라운드~");
-					int pinNum = (int) (Math.random() * 10) + 1;
-					int inputNum = Integer.parseInt(sc.nextLine());
+				if (round == TOTAL_ROUNDS - 1 && score >= 10) {
+					displayScore();
 
-					int bonusScore = 10 - Math.abs(pinNum - inputNum);
-					System.out.println(bonusScore + " " + pinNum + " " + inputNum);
-					totalScore[player] += bonusScore * 2;
+					System.out.println("🎉 보너스 라운드! 한 번 더 굴리세요!");
+
+					int bonusScore = rollBall(sc, 10);
+
 					board[player].add(bonusScore);
-					System.out.println("총" + bonusScore + "개의 볼링 핀을 쓰러뜨렸습니다!\n보너스 점수 " + bonusScore * 2 + "추가!");
-					// todo
-					// 스트라이크, 스페어 처리 (그냥 출력만)
+					System.out.println("보너스 점수 +" + (bonusScore * 2) + "점 추가!");
+
 				}
-				
-				roundScore[player][round] = totalScore[player];
-				// 점수판 파일에 쓰기
 
 			}
 		}
 
-		// todo
-		// 점수판 출력 > 파일 입출력
-		System.out.println("점수판 ㅎㅎ");
-		for (int p = 0; p < headCnt; p++) {
-			System.out.print("player"+p);
-			for (int i = 0; i < board[p].size(); i++) {
-				System.out.print(" "+board[p].get(i));
+		System.out.println("\n🎳 게임이 끝났습니다! 다음에 또 봐요~");
+		displayScore();
+	}
+
+	int rollBall(Scanner sc, int maxPins) {
+		int randomRoll = (int) (Math.random() * maxPins) + 1;
+		System.out.println("🎳 공을 굴리세요! (0~" + maxPins + " 입력)");
+
+		int userRoll = Integer.parseInt(sc.nextLine());
+
+		int score = maxPins - Math.abs(randomRoll - userRoll);
+		System.out.println("🎳 " + score + "개의 핀을 쓰러뜨렸습니다!");
+		return score;
+	}
+
+	void applyShoeBonus(int player, int shoesNum, int round) {
+		// 전설 신발
+		if (player < shoesNum) {
+			System.out.println("👟 전설 신발 보너스 +1점 추가!");
+			roundScore[player][round] += 1;
+		}
+	}
+
+	void displayScore() {
+		System.out.println("\n📋 볼링 점수판 📋");
+
+		// 점수판 헤더
+		System.out.print("============================================\n");
+		System.out.print("| Player |");
+		for (int round = 0; round < TOTAL_ROUNDS; round++) {
+			System.out.printf(" R%-3d |", round + 1);
+		}
+		System.out.print(" B  | Total |\n");
+		System.out.print("--------------------------------------------\n");
+
+		for (int player = 0; player < board.length; player++) {
+			int rolls = board[player].size();
+
+			// 보너스 점수 (없으면 0)
+			int bonusScore = (rolls % 2 != 0) ? board[player].get(rolls - 1) * 2 : 0;
+
+			// 결과 출력
+			System.out.printf("|   P%-3d |", player + 1);
+			for (int i = 0; i < TOTAL_ROUNDS * 2; i += 2) {
+				if (i >= rolls) {
+					System.out.print("      |");
+					continue;
+				}
+				int firstRoll = board[player].get(i);
+				int secondRoll = (i + 1 < rolls) ? board[player].get(i + 1) : 0;
+
+				String rollStr;
+				if (firstRoll == 10) // 스트라이크
+					rollStr = " X  ";
+				else if (firstRoll + secondRoll == 10) // 스페어
+					rollStr = firstRoll + " /";
+				else
+					rollStr = firstRoll + " " + secondRoll;
+
+				System.out.printf(" %-4s |", rollStr);
 			}
-			System.out.println();
-			for (int i = 0; i < roundScore[p].length; i++) {
-				System.out.print(roundScore[p][i] + " ");
+			System.out.printf(" %-3d |\n", bonusScore); // 보너스 점수 (없으면 0)
+
+			// 누적 점수 출력
+			System.out.print("|        |");
+			for (int round = 0; round < TOTAL_ROUNDS; round++) {
+				System.out.printf(" %-4d |", roundScore[player][round]);
 			}
-			System.out.println();
+			System.out.printf(" %-3d | %-5d |\n", bonusScore, bonusScore + roundScore[player][TOTAL_ROUNDS - 1]);
 		}
 
+		System.out.println("============================================");
 	}
 
-	void displayScore(int score) { // 점수판 출력
-		
-	}
-	
-	void writeScore() { // 점수 저장(파일)
-		File file = new File("book.txt");
-
-		try {
-			FileOutputStream fos = new FileOutputStream(file);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-			oos.writeObject(board);
-
-			oos.close();
-			fos.close();
-		} catch (Exception e) {
-			System.out.println("에러발생!!!");
-			e.printStackTrace();
-		}
-		System.out.println("저장되었습니다.");
-	}
 }

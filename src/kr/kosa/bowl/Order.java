@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import kr.kosa.bowl.exception.OrderException;
 import lombok.Data;
 
 @Data
