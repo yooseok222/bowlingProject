@@ -31,7 +31,8 @@ public class Game {
 
 		// 게임 시작 >> 출력
 		System.out.println("환영합니다! 볼링 게임을 시작합니다!");
-		System.out.println("볼링게임 하는 법: 0~10만 입력하세요~");
+		System.out.println("볼링게임 하는 법: 원하는 숫자를 입력하세요~");
+		System.out.println("문자를 입력하면 간식을 구매합니다!");
 
 		Scanner sc = new Scanner(System.in);
 
@@ -106,12 +107,12 @@ public class Game {
 
 	private int rollBall(Scanner sc, int maxPins) {
 		int randomRoll = (int) (Math.random() * maxPins) + 1;
-		System.out.println("🎳 공을 굴리세요! (0~" + maxPins + " 입력)");
 
 		int score = 0;
 
 		while (true) {
 			try {
+				System.out.println("🎳 공을 굴리세요!");
 				int userRoll = Integer.parseInt(sc.nextLine()) % (maxPins + 1);
 
 				score = maxPins - Math.abs(randomRoll - userRoll);
