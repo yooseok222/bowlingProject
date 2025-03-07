@@ -6,12 +6,14 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Game {
 	static int TOTAL_ROUNDS = 2;
 	List<Integer>[] board;
 	int[][] roundScore;
+	private List<Map<String, Integer>> orderMenuList;
 
 	public void start(int headCnt, int shoesNum) {
 		board = new ArrayList[headCnt];
@@ -100,18 +102,30 @@ public class Game {
 		displayScore();
 	}
 
-	int rollBall(Scanner sc, int maxPins) {
+	private int rollBall(Scanner sc, int maxPins) {
 		int randomRoll = (int) (Math.random() * maxPins) + 1;
 		System.out.println("🎳 공을 굴리세요! (0~" + maxPins + " 입력)");
+		
+		int score = 0;
 
-		int userRoll = Integer.parseInt(sc.nextLine());
-
-		int score = maxPins - Math.abs(randomRoll - userRoll);
-		System.out.println("🎳 " + score + "개의 핀을 쓰러뜨렸습니다!");
+		while (true) {
+			try {
+				int userRoll = Integer.parseInt(sc.nextLine()) % 11;
+				
+				score = maxPins - Math.abs(randomRoll - userRoll);
+				System.out.println("🎳 " + score + "개의 핀을 쓰러뜨렸습니다!");
+				
+				break;
+			} catch ( NumberFormatException e) {
+				// 간식 주문
+				
+			}
+		}
+		
 		return score;
 	}
 
-	void applyShoeBonus(int player, int shoesNum, int round) {
+	private void applyShoeBonus(int player, int shoesNum, int round) {
 		// 전설 신발
 		if (player < shoesNum) {
 			System.out.println("👟 전설 신발 보너스 +1점 추가!");
@@ -119,7 +133,7 @@ public class Game {
 		}
 	}
 
-	void displayScore() {
+	private void displayScore() {
 		System.out.println("\n📋 볼링 점수판 📋");
 
 		// 점수판 헤더
