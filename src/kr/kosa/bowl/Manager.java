@@ -1,6 +1,7 @@
 package kr.kosa.bowl;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -124,7 +125,7 @@ public class Manager {
 		String snackName = sc.nextLine();
 //		
 //		for(int i = 0 ; i<snackList.size(); i++) {
-//			if(snackName.equals(snackList.get(i).getSnackName())) {
+//		ㄷ	if(snackName.equals(snackList.get(i).getSnackName())) {
 //				snackList.remove(i);
 //			}
 //		}
@@ -134,11 +135,35 @@ public class Manager {
 	
 	/** 상품 수정(오버로딩) */
 	private void updateSnack() {
-		System.out.println("");
+		System.out.println("상품 수정 페이지");
+		System.out.print("수정하실 상품의 이름을 입력해주세요 : ");
+		String snackName = sc.nextLine();
+		
+		Map<String, Snack> getSnack = getSnackByName(snackName); 
+		if(getSnack.isEmpty()) {
+			System.out.println("결과가 없습니다.");
+		}else {
+			System.out.println("수정하실 부분을 알려주세요");
+			System.out.println("1. 이름 수정 | 2. 가격 수정 | 0. 관리자 메뉴로 돌아가기");
+			String input = sc.nextLine();
+			switch(input) {
+				case "1" : updateSnackName(getSnack, snackName);
+					break;
+				case "2" : updateSnackPrice(getSnack);
+					break;
+				case "0" : getAdminMenu();
+					break;
+				default : System.out.println("잘못 입력하셨습니다.");
+					break;
+			}
+			
+		}
+		
 	};
-	
+
+
 	/** 전체 상품 조회*/
-	private void getSnackList() {
+	private void getSnackList() { 
 		
 	    System.out.println("전체 상품 조회 페이지");
 	    System.out.println("====================================================================");
@@ -157,10 +182,10 @@ public class Manager {
 	/** 이름으로 상품 조회 */
 	private void getSnackByName() {
 		System.out.print("검색하실 상품 이름을 입력하세요 : ");
-		String snackName = sc.nextLine();
+		String snackName = sc.nextLine(); 
 		
 		 for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
-			if(e.getKey().contains(snackName)) {
+			if(e.getKey().contains(snackName)) { 
 				System.out.println("상품명 : " + e.getValue().getSnackName() + 
 						" | 가격 : " + e.getValue().getSnackPrice() + 
 						" | 수량 : " + e.getValue().getSnackCnt());
@@ -168,8 +193,44 @@ public class Manager {
 		}
 	};
 	
+	
+	/** 상품 수정시 수정할 상품 검색 
+	 * @param snackName */
+	private Map getSnackByName(String snackName) {
+		Map<String, Snack> result = new HashMap<>();
+		
+		 for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
+			if(snackName.equals(e.getKey())) {
+				result.put(snackName, e.getValue());
+				return result;
+			}
+		} 
+	   return result;
+	}; 
+	
+	
+	/** 상품 이름 수정
+	 * @param getSnack, snackName */
+	private void updateSnackName(Map<String, Snack> getSnack, String snackName) {
+		System.out.println("수정하실 상품의 이름을 입력해주세요");
+		String newName = sc.nextLine();
+		
+		Snack snack = snackMenu.remove(snackName);
+		if(snack != null) {
+			snack.setSnackName(newName);			
+			snackMenu.put(newName, snack);
+			System.out.println(snackMenu.get(newName).getSnackPrice());
+			SnackFile.makeSnackFile(snackMenu);
+		}
+	}
+	
+	/** 상품 가격 수정*/
+	private void updateSnackPrice(Map<String, Snack> snack) {
+		
+	}
+	
 	/** 전체 매출 조회 */
 	private void getProfit() {
-		System.out.println("전체 매출 조회 페이지");
+		System.out.println("전체 매출 조회 페이지"); 
 	};
 }
