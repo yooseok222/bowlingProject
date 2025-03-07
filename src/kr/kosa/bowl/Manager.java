@@ -99,16 +99,27 @@ public class Manager {
 	private void addSnack() {
 		
 		System.out.println("상품을 추가합니다.");
+		String snackName = null;
+		int snackPrice = 0;
+		int snackCnt = 0;
 
-		System.out.print("상품 이름을 입력해주세요 : ");
-		String snackName = sc.nextLine();
+		do {
+			System.out.print("상품 이름을 입력해주세요 : ");
+			snackName = sc.nextLine();	
+			if(snackName.isBlank()) {
+				System.err.println("상품 이름이 입력되지 않았습니다.");
+			}
+		}while(snackName.isBlank());
 
-		System.out.print("상품 가격을 입력해주세요 : ");
-		int snackPrice = Integer.parseInt(sc.nextLine());
 		
-		System.out.print("상품 수량을 입력해주세요 : ");
-		int snackCnt = Integer.parseInt(sc.nextLine());
-			
+		String inputKind = null;
+		
+		inputKind = "상품 가격";
+		snackPrice = validateNumber(inputKind);
+		
+		inputKind = "상품 수량";
+		snackCnt = validateNumber(inputKind);
+				
 		Snack snack = new Snack(snackName, snackPrice, snackCnt);
 		
 		snackMenu.put(snackName, snack);
@@ -116,7 +127,36 @@ public class Manager {
 		
 		System.out.println("상품이 추가되었습니다.");
 	};
+	 
 	
+	/** 상품 수량, 가격 입력 검증 */ 
+	private int validateNumber(String inputKind) {
+		
+		int result = 0;
+		boolean isValid = false;
+		
+		do {
+			System.out.print(inputKind + "을 입력해주세요 : ");
+			String input= sc.nextLine();
+			if(input.isBlank()) {
+				System.err.println(inputKind + " 값이 입력되지 않았습니다.");
+			}else { 
+				try {
+					result = Integer.parseInt(input);
+					if(result <= 0) {
+						System.out.println(inputKind + "은 0보다 커야 합니다.");
+					}else { 
+						isValid = true;
+						return result;
+					}
+				}catch (NumberFormatException e) {
+					System.out.println(inputKind + "은 숫자만 입력해주세요.");
+				}
+			}
+		}while(!isValid);
+		
+		return 0;
+	}
 
 	/** 상품 삭제 */
 	private void delSnack() {
@@ -156,9 +196,7 @@ public class Manager {
 				default : System.out.println("잘못 입력하셨습니다.");
 					break;
 			}
-			 
 		} 
-		
 	};
 
 
@@ -256,6 +294,8 @@ public class Manager {
 		}
 
 	}
+	
+	
 	
 	/** 전체 매출 조회 */
 	private void getProfit() {
