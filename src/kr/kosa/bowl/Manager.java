@@ -27,7 +27,7 @@ public class Manager {
 			
 			isCorrect = (inputId.equals("admin") && inputPw.equals("1234")) ? true : false;
 			
-			if(!isCorrect) System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+			if(!isCorrect) System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
 		
 		}while(!isCorrect);
 		
@@ -50,7 +50,7 @@ public class Manager {
 					break;
 				case "3" : getProfit();
 					break;
-				default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+				default : System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
 					break;
 			}
 		}
@@ -72,7 +72,7 @@ public class Manager {
 		while(true) {
 		
 			System.out.println("상품 관리 페이지입니다.");
-			System.out.println("1. 전체 상품 조회 | 2. 상품 추가 | 3. 상품 수정 | 4. 상품 삭제 | 5. 상품 검색 0. 관리자 메뉴로 돌아가기");
+			System.out.println("1. 전체 상품 조회 | 2. 상품 추가 | 3. 상품 수정 | 4. 상품 삭제 | 5. 상품 검색 | 0. 관리자 메뉴로 돌아가기");
 			
 			String inputMenu = sc.nextLine();
 			
@@ -99,16 +99,27 @@ public class Manager {
 	private void addSnack() {
 		
 		System.out.println("상품을 추가합니다.");
+		String snackName = null;
+		int snackPrice = 0;
+		int snackCnt = 0;
 
-		System.out.print("상품 이름을 입력해주세요 : ");
-		String snackName = sc.nextLine();
+		do {
+			System.out.print("상품 이름을 입력해주세요 : ");
+			snackName = sc.nextLine();	
+			if(snackName.isBlank()) {
+				System.err.println("상품 이름이 입력되지 않았습니다.");
+			}
+		}while(snackName.isBlank());
 
-		System.out.print("상품 가격을 입력해주세요 : ");
-		int snackPrice = Integer.parseInt(sc.nextLine());
 		
-		System.out.print("상품 수량을 입력해주세요 : ");
-		int snackCnt = Integer.parseInt(sc.nextLine());
-			
+		String inputKind = null;
+		
+		inputKind = "상품 가격";
+		snackPrice = validateNumber(inputKind);
+		
+		inputKind = "상품 수량";
+		snackCnt = validateNumber(inputKind);
+				
 		Snack snack = new Snack(snackName, snackPrice, snackCnt);
 		
 		snackMenu.put(snackName, snack);
@@ -116,22 +127,72 @@ public class Manager {
 		
 		System.out.println("상품이 추가되었습니다.");
 	};
+	 
 	
+	/** 상품 수량, 가격 입력 검증 */ 
+	private int validateNumber(String inputKind) {
+		
+		int result = 0;
+		boolean isValid = false;
+		
+		do {
+			System.out.print(inputKind + "을 입력해주세요 : ");
+			
+			String input= sc.nextLine();
+			
+			if(input.isBlank()) {
+				System.err.println(inputKind + " 값이 입력되지 않았습니다.");
+			}else { 
+				try {
+					result = Integer.parseInt(input);
+					
+					if(result <= 0) {
+						System.err.println(inputKind + "은 0보다 커야 합니다.");
+					}else { 
+						isValid = true;
+					
+						return result;
+					}
+				}catch (NumberFormatException e) {
+					System.err.println(inputKind + "은 숫자만 입력해주세요.");
+				}
+			}
+		}while(!isValid);
+		
+		return 0;
+	}
 
 	/** 상품 삭제 */
 	private void delSnack() {
 		
 		System.out.print("삭제하실 상품 이름을 입력하세요 : ");
 		String snackName = sc.nextLine();
-//		
-//		for(int i = 0 ; i<snackList.size(); i++) {
-//		ㄷ	if(snackName.equals(snackList.get(i).getSnackName())) {
-//				snackList.remove(i);
-//			}
-//		}
+
+		boolean doesExist = getSnackByName(snackName);
 		
-		getSnackList(); 
-	};
+		if(!doesExist) {
+			System.err.println("결과가 없습니다.");
+		}else {
+			boolean escape = false;
+			do {
+				System.out.println(snackName + "을 삭제하시겠습니까? Y/N");
+				String answer = sc.nextLine();
+				System.out.println(answer.toLowerCase());
+				if(answer.toUpperCase().equals("Y")) {
+					snackMenu.remove(snackName);
+					SnackFile.makeSnackFile(snackMenu);
+					System.out.println("상품이 삭제되었습니다.");
+					escape = true;
+				}else if(answer.toUpperCase().equals("N")){
+					System.out.println("상품 삭제를 취소하셨습니다.");
+					escape = true;
+				}else {
+					System.err.println("잘못 입력하셨습니다.");
+				}	
+			}while(escape = false);
+			
+		}
+	}; 
 	
 	/** 상품 수정(오버로딩) */
 	private void updateSnack() {
@@ -139,9 +200,12 @@ public class Manager {
 		System.out.print("수정하실 상품의 이름을 입력해주세요 : ");
 		String snackName = sc.nextLine();
 		
-		Map<String, Snack> getSnack = getSnackByName(snackName); 
-		if(getSnack.isEmpty()) {
-			System.out.println("결과가 없습니다.");
+		boolean doesExist = false;
+		
+		doesExist = getSnackByName(snackName); 
+		
+		if(!doesExist) {
+			System.err.println("결과가 없습니다.");
 		}else {
 			System.out.println("수정하실 부분을 알려주세요");
 			System.out.println("1. 이름 수정 | 2. 가격 수정 | 0. 관리자 메뉴로 돌아가기");
@@ -153,12 +217,10 @@ public class Manager {
 					break;
 				case "0" : getAdminMenu();
 					break;
-				default : System.out.println("잘못 입력하셨습니다.");
+				default : System.err.println("잘못 입력하셨습니다.");
 					break;
 			}
-			 
-		} 
-		
+		}  
 	};
 
 
@@ -171,7 +233,6 @@ public class Manager {
 	    System.out.println("====================================================================");		
 
 	    for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
-	    	
 	    	System.out.printf(" %-12s | %-12s | %-12s\n", e.getValue().getSnackName(), e.getValue().getSnackPrice(), e.getValue().getSnackCnt());
 		}
 	    
@@ -194,17 +255,15 @@ public class Manager {
 	}; 
 	
 	 
-	/** 상품 수정시 수정할 상품 검색 
+	/** 상품 수정시 수정할 상품 검색  
 	 * @param snackName */
-	private Map getSnackByName(String snackName) {
-		Map<String, Snack> result = new HashMap<>();
-		
-		 for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
-			if(snackName.equals(e.getKey())) {
-				result.put(snackName, e.getValue());
-				return result;
+	private boolean getSnackByName(String snackName) {
+		boolean result = false;
+		for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
+			if(snackName.equals(e.getKey())){
+				result = true;
 			}
-		} 
+		}
 	   return result;
 	}; 
 	
@@ -221,7 +280,7 @@ public class Manager {
 			
 			newName = sc.nextLine();
 			
-			if(newName.isBlank()) { //상품명을 입력하지 않았거나, 공백인 경우 에러메시지 반환
+			if(newName.isBlank()) {
 				System.err.println("상품명이 입력되지 않았습니다.");
 			}else {
 				Snack snackNameChanged = snackMenu.remove(snackName);
