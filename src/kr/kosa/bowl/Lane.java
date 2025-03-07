@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
+import lombok.Data;
 
+@Data
 public class Lane {
 	private int laneNum; // 레인넘버
 	private int headCnt; // 인원수
