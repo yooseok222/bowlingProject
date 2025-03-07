@@ -2,16 +2,15 @@ package kr.kosa.bowl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Manager {
 
 	Scanner sc = new Scanner(System.in);
 	List<Snack> snackList = new ArrayList<Snack>();
-	
-	///관리자 아이디랑 비번 만들어놓긴 했는데 써먹을 곳이 없어서 주석처리함
-//	private String id;
-//	private String pw;
+
+	Map<String, Snack> snackMenu = SnackFile.readSnackFile();
 	
 	/** 관리자 인증 */
 	public void validateManager() {
@@ -19,7 +18,7 @@ public class Manager {
 		
 		do {
 
-			System.out.print("아이디를 입력하세요 : ");
+			System.out.print("아이디를 입력하세요 : "); 
 			String inputId = sc.nextLine();
 			
 			System.out.print("비밀번호를 입력하세요 : ");
@@ -35,7 +34,7 @@ public class Manager {
 	};
 	
 	/** 관리자 메뉴 */
-	private void getAdminMenu() {
+	private void getAdminMenu() { 
 		
 		while(true) {
 			System.out.println("관리자 메뉴입니다.");
@@ -129,7 +128,7 @@ public class Manager {
 			}
 		}
 		
-		getSnackList();
+		getSnackList(); 
 	};
 	
 	/** 상품 수정(오버로딩) */
@@ -144,8 +143,8 @@ public class Manager {
 	    System.out.printf(" %-12s | %-12s | %-12s\n", "상품명", "가 격", "수 량");
 	    System.out.println("====================================================================");		
 
-	    for(Snack e : snackList) {
-	    	System.out.printf(" %-12s | %-12s | %-12s\n", e.getSnackName(), e.getSnackPrice(), e.getSnackCnt());
+	    for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
+	    	System.out.printf(" %-12s | %-12s | %-12s\n", e.getValue().getSnackName(), e.getValue().getSnackPrice(), e.getValue().getSnackCnt());
 		}
 	    
 	    System.out.println("====================================================================");
@@ -162,7 +161,6 @@ public class Manager {
 				System.out.println("상품명 : " + e.getSnackName() + " | 가격 : " + e.getSnackPrice() + " | 수량 : " + e.getSnackCnt());
 			}
 		}
-	
 	};
 	
 	/** 전체 매출 조회 */
