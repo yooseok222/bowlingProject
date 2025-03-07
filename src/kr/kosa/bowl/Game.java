@@ -107,25 +107,25 @@ public class Game {
 	private int rollBall(Scanner sc, int maxPins) {
 		int randomRoll = (int) (Math.random() * maxPins) + 1;
 		System.out.println("🎳 공을 굴리세요! (0~" + maxPins + " 입력)");
-		
+
 		int score = 0;
 
 		while (true) {
 			try {
-				int userRoll = Integer.parseInt(sc.nextLine()) % 11;
-				
+				int userRoll = Integer.parseInt(sc.nextLine()) % (maxPins + 1);
+
 				score = maxPins - Math.abs(randomRoll - userRoll);
 				System.out.println("🎳 " + score + "개의 핀을 쓰러뜨렸습니다!");
-				
+
 				break;
-			} catch ( NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				orderMenuList = new ArrayList<>();
 				// 간식 주문
 				Order order = OrderFactory.createOrder();
 				orderMenuList.add(order.orderMenu());
 			}
 		}
-		
+
 		return score;
 	}
 
