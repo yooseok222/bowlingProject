@@ -168,11 +168,31 @@ public class Manager {
 		System.out.print("삭제하실 상품 이름을 입력하세요 : ");
 		String snackName = sc.nextLine();
 
+		boolean doesExist = getSnackByName(snackName);
 		
-		
-		
-		getSnackList(); 
-	};
+		if(!doesExist) {
+			System.err.println("결과가 없습니다.");
+		}else {
+			boolean escape = false;
+			do {
+				System.out.println(snackName + "을 삭제하시겠습니까? Y/N");
+				String answer = sc.nextLine();
+				System.out.println(answer.toLowerCase());
+				if(answer.toUpperCase().equals("Y")) {
+					snackMenu.remove(snackName);
+					SnackFile.makeSnackFile(snackMenu);
+					System.out.println("상품이 삭제되었습니다.");
+					escape = true;
+				}else if(answer.toUpperCase().equals("N")){
+					System.out.println("상품 삭제를 취소하셨습니다.");
+					escape = true;
+				}else {
+					System.err.println("잘못 입력하셨습니다.");
+				}	
+			}while(escape = false);
+			
+		}
+	}; 
 	
 	/** 상품 수정(오버로딩) */
 	private void updateSnack() {
@@ -184,8 +204,9 @@ public class Manager {
 		
 		doesExist = getSnackByName(snackName); 
 		
-		if(doesExist) {
-			
+		if(!doesExist) {
+			System.err.println("결과가 없습니다.");
+		}else {
 			System.out.println("수정하실 부분을 알려주세요");
 			System.out.println("1. 이름 수정 | 2. 가격 수정 | 0. 관리자 메뉴로 돌아가기");
 			String input = sc.nextLine();
@@ -199,9 +220,7 @@ public class Manager {
 				default : System.err.println("잘못 입력하셨습니다.");
 					break;
 			}
-		}else {
-			System.err.println("결과가 없습니다.");
-		} 
+		}  
 	};
 
 
@@ -214,7 +233,6 @@ public class Manager {
 	    System.out.println("====================================================================");		
 
 	    for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
-	    	
 	    	System.out.printf(" %-12s | %-12s | %-12s\n", e.getValue().getSnackName(), e.getValue().getSnackPrice(), e.getValue().getSnackCnt());
 		}
 	    
@@ -262,7 +280,7 @@ public class Manager {
 			
 			newName = sc.nextLine();
 			
-			if(newName.isBlank()) { //상품명을 입력하지 않았거나, 공백인 경우 에러메시지 반환
+			if(newName.isBlank()) {
 				System.err.println("상품명이 입력되지 않았습니다.");
 			}else {
 				Snack snackNameChanged = snackMenu.remove(snackName);
