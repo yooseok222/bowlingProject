@@ -85,7 +85,7 @@ public class Lane {
 				System.out.print("신발 갯수를 입력하세요 : ");
 				this.shoesCnt = Integer.parseInt(sc.nextLine().trim());
 				// 신발 개수가 인원 수보다 많으면 다시 입력 요구
-				if (this.shoesCnt < 1 || this.shoesCnt > this.headCnt) {
+				if (this.shoesCnt < 0 || this.shoesCnt > this.headCnt) {
 					System.out.println("신발 갯수는 최소 1개, 최대 " + this.headCnt + "개까지 가능합니다. 다시 입력하세요.");
 					continue;
 				}
@@ -94,10 +94,6 @@ public class Lane {
 				System.out.println("유효한 숫자를 입력하세요.");
 			}
 		}
-		orderMenuList = new ArrayList<>();
-
-		// this.selectedAt =
-		// LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 
 	}
 
