@@ -1,11 +1,14 @@
 package kr.kosa.bowl;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
+import kr.kosa.bowl.factory.ReceiptFactory;
 import lombok.Data;
 
 @Data
@@ -18,29 +21,45 @@ public class Lane {
 	private int gameCnt; // 게임카운트
 	private Game game; // 게임객체
 	private List<Map<String, Integer>> orderMenuList;
+	private Profit profit;
 
 	Scanner sc = new Scanner(System.in);
 
 	/* Lane 생성자 */
 	public Lane() {
-
+		this.profit = Profit.getInstance();
 		this.game = new Game();
 		this.orderMenuList = new ArrayList<>();
+		this.selectedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+		this.gameCnt = 0;
+
+	}
+
+	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */
+	public void useLane() {
+		if (!isClean) { // 레인이 사용 중이면
+			System.out.println("⚠ 현재 레인은 사용 중입니다. 다른 레인을 선택해주세요.");
+			return;
+		}
+
+		System.out.println("\n🎳 선택한 레인을 사용합니다...");
+		this.isClean = false; // 사용 중으로 변경
+		startLane(); // 게임 시작
 
 	}
 
 	/* 🎮 게임을 시작하는 메서드 */
-    public void startLane() {
-        inputHeadAndShoes();  // 인원 및 신발 선택
-        
-        boolean isGameFinished = false; // 게임이 끝났는지 확인하는 플래그
+	public void startLane() {
+		inputHeadAndShoes(); // 인원 및 신발 선택
 
-        while (!isGameFinished) {  
-            isGameFinished = selectSnackOrBowl();  // 간식 또는 게임 선택
-        }
+		boolean isGameFinished = false; // 게임이 끝났는지 확인하는 플래그
 
-        showReceipt();  // 🎯 모든 과정이 끝난 후 영수증 출력
-    }
+		while (!isGameFinished) {
+			isGameFinished = selectSnackOrBowl(); // 간식 또는 게임 선택
+		}
+
+		profit.addReceipt(showReceipt()); // 영수증을 출력하고 바로 총매출에 추가
+	}
 
 	// 1. 인원수 입력 및 신발선택
 	private void inputHeadAndShoes() {
@@ -66,7 +85,7 @@ public class Lane {
 				System.out.print("신발 갯수를 입력하세요 : ");
 				this.shoesCnt = Integer.parseInt(sc.nextLine().trim());
 				// 신발 개수가 인원 수보다 많으면 다시 입력 요구
-				if (this.shoesCnt < 1 || this.shoesCnt > this.headCnt) {
+				if (this.shoesCnt < 0 || this.shoesCnt > this.headCnt) {
 					System.out.println("신발 갯수는 최소 1개, 최대 " + this.headCnt + "개까지 가능합니다. 다시 입력하세요.");
 					continue;
 				}
@@ -75,36 +94,34 @@ public class Lane {
 				System.out.println("유효한 숫자를 입력하세요.");
 			}
 		}
-		orderMenuList = new ArrayList<>();
-
-		// this.selectedAt =
-		// LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 
 	}
 
 	// 2. 간식먹을지 게임할지 메서드
 	private boolean selectSnackOrBowl() {
+
 		while (true) {
 			try {
 				System.out.println("\n========== 선택 ==========");
 				System.out.println("1. 간식 구매 🍿");
-				System.out.println("2. 게임 시작 🎳"); 
+				System.out.println("2. 게임 시작 🎳");
 				System.out.println("3. 결제 및 종료 🧾");
-                System.out.print("선택하세요 (1, 2 또는 3) : ");
+				System.out.print("선택하세요 (1, 2 또는 3) : ");
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
 				if (cmd == 1) {
 					// 간식
 					selectSnack();
-					 return false; // 게임 종료 아님
+					return false; // 게임 종료 아님
 				} else if (cmd == 2) {
 					// 게임시작
 					selectBowl();
 					return false; // 게임 종료 아님
 				} else if (cmd == 3) {
-                    return true; // 게임 종료
-                } else {
-                	System.out.println("⚠ 1, 2 또는 3을 입력해주세요.");
+
+					return true; // 게임 종료
+				} else {
+					System.out.println("⚠ 1, 2 또는 3을 입력해주세요.");
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("유효한 숫자를 입력하세요.");
@@ -114,7 +131,6 @@ public class Lane {
 
 	// 2-1.간식 메서드
 	private void selectSnack() {
-		orderMenuList = new ArrayList<>();
 		Order order = OrderFactory.createOrder();
 		Map<String, Integer> orderedMenu = order.orderMenu();
 		orderMenuList.add(orderedMenu);
@@ -123,18 +139,19 @@ public class Lane {
 
 	// 2-2.게임 메서드
 	private void selectBowl() {
+		gameCnt++;
 		game.start(this.headCnt, this.shoesCnt);
 
-		
 		// 게임이 끝난 후 다시 선택하도록 루프 유지
 		System.out.println("\n🎮 게임이 종료되었습니다! 다시 선택해주세요.");
 	}
-	
+
 	/* 3. 결제 및 영수증 출력 */
-    private void showReceipt() {
-        System.out.println("\n🧾 영수증을 생성합니다...");
-        Receipt receipt = new Receipt(this); // 현재 Lane 객체를 전달
-        receipt.showReceipt();
-    }
+	private Receipt showReceipt() {
+		System.out.println("\n🧾 영수증을 생성합니다...");
+		Receipt receipt = ReceiptFactory.createReceipt(this); // 현재 Lane 객체를 전달
+		receipt.showReceipt();
+		return receipt;
+	}
 
 }
