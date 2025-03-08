@@ -37,7 +37,7 @@ public class Receipt implements Serializable {
 	// 총 정산 금액
 	private int calculateTotalFee() {
 		int total = 0; // 멱등성을 위해 로컬 변수 사용
-		total += lane.getHeadCnt() * (lane.getGameCnt() + 1) * gameFee; // 볼링 게임 비용
+		total += lane.getHeadCnt() * lane.getGameCnt() * gameFee; // 볼링 게임 비용
 		total += lane.getShoesCnt() * shoesFee; // 신발 대여 비용
 
 		// 음식 비용
