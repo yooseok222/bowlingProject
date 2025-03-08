@@ -66,16 +66,34 @@ public class Receipt implements Serializable {
 	// 영수증 내역 출력
 	public void showReceipt() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("---영수증---\n");
-		sb.append(lane.getSelectedAt()).append("\n");
-		sb.append("총 인원 수 : ").append(lane.getHeadCnt()).append("\n");
-		sb.append("총 대여한 신발 수 : ").append(lane.getShoesCnt()).append("\n");
-		sb.append("---지금까지 주문하신 메뉴 내역---\n");
-		for (Map.Entry<String, Integer> m : mergedOrders.entrySet()) {
-			sb.append(m.getKey()).append(" : ").append(m.getValue()).append("개\n");
+		sb.append("========================================\n");
+		sb.append("              🎳 영 수 증 🎳            \n");
+		sb.append("========================================\n\n");
+		sb.append(String.format("거래 일시 : %s\n", lane.getSelectedAt()));
+		sb.append(String.format("총 인원 수 : %-2d명\n", lane.getHeadCnt()));
+		sb.append(String.format("신발 대여 : %-2d켤레\n\n", lane.getShoesCnt()));
+
+		sb.append("----------------------------------------\n");
+		sb.append(String.format("%-20s %6s %12s\n", "상품명", "수량", "가격"));
+		sb.append("----------------------------------------\n");
+
+		for (Map.Entry<String, Integer> entry : mergedOrders.entrySet()) {
+			String itemName = entry.getKey();
+			int quantity = entry.getValue();
+			int price = snackMap.get(itemName).getSnackPrice() * quantity;
+			sb.append(String.format("%-20s %6d %,10d 원\n", itemName, quantity, price));
 		}
-		sb.append("---\n");
-		sb.append("총 정산 금액 : ").append(totalFee).append("원 입니다.\n");
+
+		sb.append("----------------------------------------\n");
+		sb.append(String.format("%-20s %6s %,10d 원\n", "게임 비용", "-", lane.getHeadCnt() * lane.getGameCnt() * gameFee));
+		sb.append(String.format("%-20s %6s %,10d 원\n", "신발 대여 비용", "-", lane.getShoesCnt() * shoesFee));
+		sb.append("----------------------------------------\n");
+
+		sb.append(String.format("총 결제 금액 : %24s 원\n", String.format("%,10d", totalFee)));
+		sb.append("========================================\n");
+		sb.append("      💖 이용해주셔서 감사합니다 💖      \n");
+		sb.append("========================================\n");
+
 		System.out.println(sb);
 	}
 }
