@@ -67,7 +67,7 @@ public class Profit implements Serializable {
 
 	// 날짜에서 월 추출
 	private int getMonth(String date) {
-		return Integer.parseInt(date.split(".")[1]);
+		return Integer.parseInt(date.split("\\.")[1]);
 	}
 
 	// 가장 많이 팔린 메뉴 TOP 3
