@@ -16,7 +16,7 @@ public class Manager {
 	/** 관리자 인증 */
 	public void validateManager() {
 		boolean isCorrect = false;
-		
+			
 		do {
 
 			System.out.print("아이디를 입력하세요 : "); 
@@ -61,8 +61,29 @@ public class Manager {
 	
 	/** 레인 청소 */
 	private void cleanLane() {
-		
-		System.out.println("쓱싹쓱싹");
+		System.out.println("전체 레인 상태 조회");
+
+		int input = 0;
+		boolean flag = false;
+		do { 
+			Menu.printLaneAvail();
+			
+			System.out.println("청소할 레인의 번호를 입력해주세요"); 
+			System.out.println("0번을 누르시면 관리자 메뉴로 돌아갑니다");
+			input = Integer.parseInt(sc.nextLine())-1;
+			 
+			if(input == -1) { 
+				flag = true;
+				break;
+			}else {
+				if(Menu.lanes[input].isClean() == true) {
+					System.out.println("이미 청소된 레인입니다. 다시 입력해주세요.");
+				}else {
+					Menu.lanes[input].setClean(true);
+					System.out.println("쓱싹쓱싹 - 청소가 완료되었습니다.");
+				}				
+			}
+		}while(!flag);
 	
 	};
 
