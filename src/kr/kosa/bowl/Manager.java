@@ -16,25 +16,48 @@ public class Manager {
 	
 	SnackFileHandler snackFile = new SnackFileHandler();
 	Map<String, Snack> snackMenu = snackFile.readSnackMap();
-			
-			
+
+	private static final String ADMIN_PASSWORD_EMAIL = "admin@bowl.com";
+	//SHA256 Hash Generator로 만든 해시값 (1234)
+	private static final String ADMIN_PASSWORD_HASH = "03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4";
 	
+	/** 이메일 유효성 검사 - 정규표현식*/
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+    
+    
+    /** 이메일 검사 */
+    public boolean verifyEmail(String email) { 
+    	return email.equals(ADMIN_PASSWORD_EMAIL);
+    }
+    
+    /** 비밀번호 검사 */
+    public boolean verifyPassword(String inputPw) {
+    	return SHA256Util.getSHA256Hash(inputPw).equals(ADMIN_PASSWORD_HASH);
+    }
+    
+    
 	/** 관리자 인증 */
 	public void validateManager() {
 		boolean isCorrect = false;
 		
 		do {
  
-			System.out.print("아이디를 입력하세요 : "); 
+			System.out.print("관리자 이메일을 입력하세요 : "); 
 			String inputId = sc.nextLine();
 			
-			System.out.print("비밀번호를 입력하세요 : ");
-			String inputPw = sc.nextLine();			
-			
-			isCorrect = (inputId.equals("admin") && inputPw.equals("1234")) ? true : false;
-			
-			if(!isCorrect) System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
-		
+			if(isValidEmail(inputId)) {
+				System.out.print("비밀번호를 입력하세요 : "); 
+				String inputPw = sc.nextLine();	
+				isCorrect = isValidEmail(inputId) && verifyPassword(inputPw) ? true : false;
+				if(!isCorrect) System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+				
+			}else {
+				System.out.println("이메일 형식이 맞지 않습니다. 다시 입력해주세요");
+//				continue;
+			}
 		}while(!isCorrect);
 		
 		getAdminMenu();
@@ -347,6 +370,9 @@ public class Manager {
 	
 	/** 전체 매출 조회 */
 	private void getProfit() {
-		System.out.println("전체 매출 조회 페이지"); 
+		System.out.println("전체 매출 조회 페이지");
+		ProfitFileHandler pf = new ProfitFileHandler();
+		pf.loadProfit();
+		
 	};
 }

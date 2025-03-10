@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.kosa.bowl.file.ProfitFileHandler;
 import lombok.ToString;
 
 @ToString
@@ -35,6 +36,9 @@ public class Profit implements Serializable {
 	// 영수증 추가
 	public void addReceipt(Receipt receipt) {
 		receiptList.add(receipt);
+	    // 3. 업데이트된 Profit 저장
+	    ProfitFileHandler profitHandler = new ProfitFileHandler();
+	    profitHandler.saveProfit();
 	}
 
 	// 영수증 리스트 출력

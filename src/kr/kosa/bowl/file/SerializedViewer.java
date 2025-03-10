@@ -8,7 +8,7 @@ public class SerializedViewer {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("profit.txt"))) {
             Object obj = ois.readObject();
             System.out.println("객체 클래스: " + obj.getClass().getName());
-            System.out.println("객체 내용: " + obj.toString());
+//            System.out.println("객체 내용: " + obj.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
