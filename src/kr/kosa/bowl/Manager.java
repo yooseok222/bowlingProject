@@ -110,8 +110,8 @@ public class Manager {
 					break;
 				case "5" : getSnackByName();
 					break;
-				case "0" : getAdminMenu();
-					break;
+				case "0" : 
+					return;
 				default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
 					break;
 			}
@@ -238,8 +238,8 @@ public class Manager {
 					break;
 				case "2" : updateSnackPrice(snackName);
 					break;
-				case "0" : getAdminMenu();
-					break;
+				case "0" : 
+					return;
 				default : System.err.println("잘못 입력하셨습니다.");
 					break;
 			}
