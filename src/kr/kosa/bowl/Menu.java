@@ -47,7 +47,6 @@ public class Menu {
 				if (laneNum <= 6 && laneNum >= 1) {
 					Game g = new Game();
 					lanes[laneNum-1].useLane();
-					lanes[laneNum-1].setClean(false);
 					break;
 				} else {
 					System.out.println("1~6만 입력하실 수 있습니다.");
