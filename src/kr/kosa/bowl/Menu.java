@@ -10,6 +10,7 @@ public class Menu {
 		for (int i = 0; i < 6; i++) {
 			lanes[i] = new Lane();
 			lanes[i].setClean(true);
+//			lanes[i].setLaneNum(i+1);
 		}
 	} 
 
@@ -64,7 +65,7 @@ public class Menu {
 	static void printLaneAvail() {
 		System.out.println("=====================================");
 		for (int i = 0; i < lanes.length; i++) {
-			System.out.printf("%10d %10s\n", i + 1, lanes[i].isClean() ? "사용가능" : "사용불가(청소필요)");
+			System.out.printf("%10d %10s\n", i+1 , lanes[i].isClean() ? "사용가능" : "사용불가(청소필요)");
 		}
 		System.out.println("=====================================");
 	}
