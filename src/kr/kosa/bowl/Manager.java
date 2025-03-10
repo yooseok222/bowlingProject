@@ -11,24 +11,47 @@ public class Manager {
 	Scanner sc = new Scanner(System.in);
 
 	Map<String, Snack> snackMenu = new LinkedHashMap<>(SnackFile.readSnackFile());
+	 
 	
+	private static final String ADMIN_PASSWORD_EMAIL = "admin@bowl.com"; 
+	//SHA256 Hash Generator로 만든 해시값 (1234)
+	private static final String ADMIN_PASSWORD_HASH = "03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4";
 	
+	/** 이메일 유효성 검사 - 정규표현식*/
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+    
+    
+    /** 이메일 검사 */
+    public boolean verifyEmail(String email) { 
+    	return email.equals(ADMIN_PASSWORD_EMAIL);
+    }
+    
+    /** 비밀번호 검사 */
+    public boolean verifyPassword(String inputPw) {
+    	return SHA256Util.getSHA256Hash(inputPw).equals(ADMIN_PASSWORD_HASH);
+    }
+    
+    
 	/** 관리자 인증 */
 	public void validateManager() {
 		boolean isCorrect = false;
-			
+		
 		do {
-
-			System.out.print("아이디를 입력하세요 : "); 
+ 
+			System.out.println("관리자 이메일을 입력하세요 : "); 
 			String inputId = sc.nextLine();
 			
-			System.out.print("비밀번호를 입력하세요 : ");
-			String inputPw = sc.nextLine();			
-			
-			isCorrect = (inputId.equals("admin") && inputPw.equals("1234")) ? true : false;
-			
-			if(!isCorrect) System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
-		
+			if(isValidEmail(inputId)) {
+				System.out.println("비밀번호를 입력하세요 : ");  
+				String inputPw = sc.nextLine();	 
+				isCorrect = isValidEmail(inputId) && verifyPassword(inputPw) ? true : false;
+				if(!isCorrect) System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+			}else {
+				System.err.println("이메일 형식이 맞지 않습니다. 다시 입력해주세요");
+			}
 		}while(!isCorrect);
 		
 		getAdminMenu();
@@ -127,7 +150,7 @@ public class Manager {
 		int snackCnt = 0;
 
 		do {
-			System.out.print("상품 이름을 입력해주세요 : ");
+			System.out.println("상품 이름을 입력해주세요 : ");
 			snackName = sc.nextLine();	
 			if(snackName.isBlank()) {
 				System.err.println("상품 이름이 입력되지 않았습니다.");
@@ -188,7 +211,7 @@ public class Manager {
 	/** 상품 삭제 */
 	private void delSnack() {
 		
-		System.out.print("삭제하실 상품 이름을 입력하세요 : ");
+		System.out.println("삭제하실 상품 이름을 입력하세요 : ");
 		String snackName = sc.nextLine();
 
 		boolean doesExist = getSnackByName(snackName);
@@ -220,7 +243,7 @@ public class Manager {
 	/** 상품 수정(오버로딩) */
 	private void updateSnack() {
 		System.out.println("상품 수정 페이지");
-		System.out.print("수정하실 상품의 이름을 입력해주세요 : ");
+		System.out.println("수정하실 상품의 이름을 입력해주세요 : ");
 		String snackName = sc.nextLine();
 		
 		boolean doesExist = false;
@@ -265,7 +288,7 @@ public class Manager {
 	
 	/** 이름으로 상품 조회 */
 	private void getSnackByName() {
-		System.out.print("검색하실 상품 이름을 입력하세요 : ");
+		System.out.println("검색하실 상품 이름을 입력하세요 : ");
 		String snackName = sc.nextLine(); 
 		
 		 for(Map.Entry<String,Snack> e : snackMenu.entrySet()) {
@@ -299,7 +322,7 @@ public class Manager {
 		String newName = "";
 		
 		do {
-			System.out.print("수정하실 상품의 새 이름을 입력해주세요");
+			System.out.println("수정하실 상품의 새 이름을 입력해주세요");
 			
 			newName = sc.nextLine();
 			
@@ -323,7 +346,7 @@ public class Manager {
 	/** 상품 가격 수정
 	 * @param snackName */
 	private void updateSnackPrice(String snackName) {
-		System.out.print("수정하실 상품의 새 가격을 입력해주세요 : ");
+		System.out.println("수정하실 상품의 새 가격을 입력해주세요 : ");
 		try {
 			int newPrice = Integer.parseInt(sc.nextLine());			
 			Snack snackPriceChanged = snackMenu.get(snackName);
