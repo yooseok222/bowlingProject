@@ -47,6 +47,7 @@ public class Menu {
 
 				if (laneNum <= 6 && laneNum >= 1) {
 					Game g = new Game();
+					lanes[laneNum - 1].setLaneNum(laneNum); // laneNum 설정
 					lanes[laneNum-1].useLane();
 					break;
 				} else {
