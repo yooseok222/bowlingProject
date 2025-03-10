@@ -42,7 +42,7 @@ public class Lane {
 			return;
 		}
 
-		System.out.println("\n🎳 선택한 레인을 사용합니다...");
+		System.out.printf("\n🎳 선택한 레인을 사용합니다...\n",laneNum);
 		this.isClean = false; // 사용 중으로 변경
 		startLane(); // 게임 시작
 
@@ -117,11 +117,9 @@ public class Lane {
 					return false; // 게임 종료 아님
 				} else if (cmd == 2) {
 					// 게임시작
-
 					selectBowl();
 					return false; // 게임 종료 아님
 				} else if (cmd == 3) {
-
 					return true; // 게임 종료
 				} else {
 					System.out.println("⚠ 1, 2 또는 3을 입력해주세요.");
@@ -152,6 +150,13 @@ public class Lane {
 	/* 3. 결제 및 영수증 출력 */
 	private Receipt showReceipt() {
 		System.out.println("\n🧾 영수증을 생성합니다...");
+		 // 게임을 진행한 경우에만 비용 반영
+	    if (gameCnt > 0) {
+	    } else {
+	        System.out.println("⚠ 게임을 진행하지 않아 게임 비용이 청구되지 않습니다.");
+	        //this.headCnt = 0;
+	        //this.shoesCnt = 0;
+	    }
 		Receipt receipt = ReceiptFactory.createReceipt(this); // 현재 Lane 객체를 전달
 		receipt.showReceipt();
 		return receipt;
