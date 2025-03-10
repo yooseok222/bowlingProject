@@ -38,11 +38,11 @@ public class Lane {
 	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */
 	public void useLane() {
 		if (!isClean) { // 레인이 사용 중이면
-			System.out.println("⚠ 현재 레인은 사용 중입니다. 다른 레인을 선택해주세요.");
+			System.err.println("⚠ 현재 레인은 사용 중입니다. 다른 레인을 선택해주세요.");
 			return;
 		}
 
-		System.out.printf("\n🎳 %d번 레인을 사용합니다...\n",laneNum);
+		System.out.printf("\n🎳 %d번 레인을 사용합니다...\n", laneNum);
 		this.isClean = false; // 사용 중으로 변경
 		startLane(); // 게임 시작
 
@@ -58,12 +58,11 @@ public class Lane {
 			isGameFinished = selectSnackOrBowl(); // 간식 또는 게임 선택
 		}
 
-		profit.addReceipt(showReceipt()); // 영수증을 출력하고 바로 총매출에 추가
+		profit.addReceipt(showReceiptInLane()); // 영수증을 출력하고 바로 총매출에 추가
 	}
 
 	// 1. 인원수 입력 및 신발선택
 	private void inputHeadAndShoes() {
-
 		// 인원수 입력 (예외 처리 완료)
 		while (true) {
 			try {
@@ -71,9 +70,9 @@ public class Lane {
 				this.headCnt = Integer.parseInt(sc.nextLine().trim());
 				if (this.headCnt < 1 || this.headCnt > 4) {
 					System.out.println("인원수는 1~4명 입니다. 다시 입력하세요.");
-					continue;
+				} else {
+					break;
 				}
-				break;
 			} catch (NumberFormatException e) {
 				System.out.println("유효한 숫자를 입력하세요.");
 			}
@@ -86,10 +85,10 @@ public class Lane {
 				this.shoesCnt = Integer.parseInt(sc.nextLine().trim());
 				// 신발 개수가 인원 수보다 많으면 다시 입력 요구
 				if (this.shoesCnt < 0 || this.shoesCnt > this.headCnt) {
-					System.out.println("신발 갯수는 최소 1개, 최대 " + this.headCnt + "개까지 가능합니다. 다시 입력하세요.");
-					continue;
+					System.out.println("신발 갯수는 최소 0개, 최대 " + this.headCnt + "개까지 가능합니다. 다시 입력하세요.");
+				} else {
+					break;
 				}
-				break;
 			} catch (NumberFormatException e) {
 				System.out.println("유효한 숫자를 입력하세요.");
 			}
@@ -144,19 +143,19 @@ public class Lane {
 		game.start(this.headCnt, this.shoesCnt);
 
 		// 게임이 끝난 후 다시 선택하도록 루프 유지
-		System.out.println("\n🎮 게임이 종료되었습니다! 다시 선택해주세요.");
+		System.out.println("\n🎳 게임이 끝났습니다! 추가 게임을 진행하거나 결제를 진행하세요.");
 	}
 
 	/* 3. 결제 및 영수증 출력 */
-	private Receipt showReceipt() {
+	private Receipt showReceiptInLane() {
 		System.out.println("\n🧾 영수증을 생성합니다...");
-		 // 게임을 진행한 경우에만 비용 반영
-	    if (gameCnt > 0) {
-	    } else {
-	        System.out.println("⚠ 게임을 진행하지 않아 게임 비용이 청구되지 않습니다.");
-	        //this.headCnt = 0;
-	        //this.shoesCnt = 0;
-	    }
+		// 게임을 진행한 경우에만 비용 반영
+		if (gameCnt > 0) {
+		} else {
+			System.out.println("⚠ 게임을 진행하지 않아 게임 비용이 청구되지 않습니다.");
+			// this.headCnt = 0;
+			// this.shoesCnt = 0;
+		}
 		Receipt receipt = ReceiptFactory.createReceipt(this); // 현재 Lane 객체를 전달
 		receipt.showReceipt();
 		return receipt;
