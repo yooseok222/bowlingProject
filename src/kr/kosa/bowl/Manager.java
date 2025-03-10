@@ -56,7 +56,7 @@ public class Manager {
 					break;
 				case "3" : getProfit();
 					break;
-				case "0": 
+				case "0" : 
 					return;
 				default : System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
 					break;

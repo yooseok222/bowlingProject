@@ -15,6 +15,7 @@ public class Menu {
 
 	public void start() {
 		Scanner sc = new Scanner(System.in);
+		Profit p = Profit.getInstance();
 
 		while (true) {
 			System.out.println("1. 볼링게임하기\n9. 관리자 메뉴화면\n0. 종료");
@@ -29,7 +30,7 @@ public class Menu {
 				break;
 			case 0:
 				System.out.println("안녕히 가세요!");
-				break;
+				return;
 			default:
 				System.out.println("0~2만 입력하세요.");
 			}
@@ -45,8 +46,9 @@ public class Menu {
 				int laneNum = Integer.parseInt(sc.nextLine());
 
 				if (laneNum <= 6 && laneNum >= 1) {
-					lanes[laneNum].useLane();
-					lanes[laneNum].setClean(false);
+					Game g = new Game();
+					lanes[laneNum - 1].setLaneNum(laneNum); // laneNum 설정
+					lanes[laneNum-1].useLane();
 					break;
 				} else {
 					System.out.println("1~6만 입력하실 수 있습니다.");

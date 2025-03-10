@@ -87,8 +87,8 @@ public class Receipt implements Serializable {
 		}
 
 		sb.append("----------------------------------------\n");
-		sb.append(String.format("%-20s %6s %,10d 원\n", "게임 비용", "-", lane.getHeadCnt() * lane.getGameCnt() * gameFee));
-		sb.append(String.format("%-20s %6s %,10d 원\n", "신발 대여 비용", "-", lane.getShoesCnt() * shoesFee));
+		sb.append(String.format("%-20s %6s %,10d 원\n", "게임 비용", lane.getGameCnt(), lane.getHeadCnt() * lane.getGameCnt() * gameFee));
+		sb.append(String.format("%-20s %6s %,10d 원\n", "신발 대여 비용", lane.getShoesCnt(), lane.getShoesCnt() * shoesFee));
 		sb.append("----------------------------------------\n");
 
 		sb.append(String.format("총 결제 금액 : %24s 원\n", String.format("%,10d", totalFee)));
