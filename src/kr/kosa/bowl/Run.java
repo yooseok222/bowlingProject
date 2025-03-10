@@ -13,6 +13,7 @@ public class Run {
 
 		Manager m = new Manager();
 		m.validateManager();
+
 		
 	}
 
