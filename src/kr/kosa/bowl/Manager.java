@@ -1,7 +1,5 @@
 package kr.kosa.bowl;
 
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -9,16 +7,18 @@ import java.util.Scanner;
 public class Manager {
 
 	Scanner sc = new Scanner(System.in);
-
-	Map<String, Snack> snackMenu = new LinkedHashMap<>(SnackFile.readSnackFile());
 	
+	SnackFileHandler snackFile = new SnackFileHandler();
+	Map<String, Snack> snackMenu = snackFile.readSnackMap();
+			
+			
 	
 	/** 관리자 인증 */
 	public void validateManager() {
 		boolean isCorrect = false;
 		
 		do {
-
+ 
 			System.out.print("아이디를 입력하세요 : "); 
 			String inputId = sc.nextLine();
 			
@@ -50,6 +50,8 @@ public class Manager {
 					break;
 				case "3" : getProfit();
 					break;
+				case "0": 
+					return;
 				default : System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
 					break;
 			}
@@ -123,7 +125,7 @@ public class Manager {
 		Snack snack = new Snack(snackName, snackPrice, snackCnt);
 		
 		snackMenu.put(snackName, snack);
-		SnackFile.makeSnackFile(snackMenu);
+		snackFile.saveSnackMap(snackMenu);
 		
 		System.out.println("상품이 추가되었습니다.");
 	};
@@ -180,7 +182,7 @@ public class Manager {
 				System.out.println(answer.toLowerCase());
 				if(answer.toUpperCase().equals("Y")) {
 					snackMenu.remove(snackName);
-					SnackFile.makeSnackFile(snackMenu);
+					snackFile.saveSnackMap(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
 				}else if(answer.toUpperCase().equals("N")){
@@ -265,7 +267,7 @@ public class Manager {
 			}
 		}
 	   return result;
-	}; 
+	};  
 	
 	
 	/** 상품 이름 수정
@@ -287,7 +289,7 @@ public class Manager {
 				if(snackNameChanged != null) {
 					snackNameChanged.setSnackName(newName);			
 					snackMenu.put(newName, snackNameChanged);
-					SnackFile.makeSnackFile(snackMenu);
+					snackFile.saveSnackMap(snackMenu);
 				}
 				System.out.println("상품 이름 수정이 완료되었습니다.");	
 			}	
@@ -307,7 +309,7 @@ public class Manager {
 			if(snackPriceChanged != null) {
 				snackPriceChanged.setSnackPrice(newPrice);
 				snackMenu.put(snackName, snackPriceChanged);
-				SnackFile.makeSnackFile();
+				snackFile.saveSnackMap(snackMenu);
 			}
 			System.out.println("상품 가격 수정이 완료되었습니다.");
 		} catch (NumberFormatException e) {
