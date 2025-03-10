@@ -68,7 +68,7 @@ public class SnackFileHandler extends FileSaver {
     }
     
     @Override
-    protected boolean validateData(Object data) {
+    protected boolean validateData(Object data) { 
         return super.validateData(data) && data instanceof Map;
     }
     

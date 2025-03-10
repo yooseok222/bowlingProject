@@ -25,7 +25,7 @@ public abstract class FileSaver {
 			initializeFile();
 		}
 	}
-	
+	 
 	public void saveToFile(Object data) {
 		//1. 저장 전 데이터 검증
 		if(!validateData(data)) {

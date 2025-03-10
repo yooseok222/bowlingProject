@@ -10,7 +10,6 @@ public class Menu {
 		for (int i = 0; i < 6; i++) {
 			lanes[i] = new Lane();
 			lanes[i].setClean(true);
-//			lanes[i].setLaneNum(i+1);
 		}
 	} 
 
