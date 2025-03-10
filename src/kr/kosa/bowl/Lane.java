@@ -102,11 +102,13 @@ public class Lane {
 
 		while (true) {
 			try {
-				System.out.println("\n========== 선택 ==========");
-				System.out.println("1. 간식 구매 🍿");
-				System.out.println("2. 게임 시작 🎳");
-				System.out.println("3. 결제 및 종료 🧾");
-				System.out.print("선택하세요 (1, 2 또는 3) : ");
+				System.out.println("\n✨🌟====== 선택 메뉴 ======🌟✨");
+				System.out.println("🍿 1. 간식 구매");
+				System.out.println("🎮 2. 게임 시작");
+				System.out.println("🧾 3. 결제 및 종료");
+				System.out.println("================================");
+				System.out.print("🔹 원하는 옵션을 선택하세요 (1, 2, 3) ▶ ");
+
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
 				if (cmd == 1) {
