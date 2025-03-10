@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.ToString;
+
+@ToString
 public class Profit implements Serializable {
 	/**
 	 * 
@@ -83,5 +86,15 @@ public class Profit implements Serializable {
 		return totalOrders.entrySet().stream().sorted((a, b) -> b.getValue() - a.getValue()) // 내림차순 정렬
 				.limit(3) // 상위 3개만 선택
 				.toList();
+	}
+	
+	public static void updateInstance(Profit loadedProfit) {
+	    if (instance == null) {
+	        instance = loadedProfit;
+	    } else {
+	        // 기존 인스턴스에 로드된 데이터 병합
+	        instance.receiptList.clear();
+	        instance.receiptList.addAll(loadedProfit.receiptList);
+	    }
 	}
 }

@@ -3,6 +3,7 @@ package kr.kosa.bowl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 
-public class Game {
+public class Game implements Serializable{
 	static int TOTAL_ROUNDS = 2;
 	List<Integer>[] board;
 	int[][] roundScore;

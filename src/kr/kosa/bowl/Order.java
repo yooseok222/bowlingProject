@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import kr.kosa.bowl.exception.OrderException;
+import kr.kosa.bowl.file.SnackFileHandler;
 import lombok.Data;
 
 @Data
@@ -13,10 +14,12 @@ public class Order {
 	private Map<String, Snack> snackMap;
 	private Scanner sc;
 
+	SnackFileHandler snackFile = new SnackFileHandler();
+	
 	// 생성자
 	public Order() {
 		sc = new Scanner(System.in);
-		snackMap = SnackFile.readSnackFile(); // 파일 읽기
+		snackMap = snackFile.readSnackMap(); // 파일 읽기
 		orderMap = new HashMap<>();
 	}
 
@@ -45,7 +48,8 @@ public class Order {
 					break;
 				case 4:
 					System.out.println("주문이 모두 종료되었습니다.");
-					SnackFile.makeSnackFile(snackMap); // 변경 사항 저장
+//					SnackFile.makeSnackFile(snackMap);
+					snackFile.saveSnackMap(snackMap);// 변경 사항 저장
 					return orderMap;
 				default:
 					throw new OrderException("잘못된 번호입니다. 1~4 사이의 숫자를 입력하세요.");

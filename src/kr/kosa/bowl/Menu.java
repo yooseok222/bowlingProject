@@ -11,7 +11,7 @@ public class Menu {
 			lanes[i] = new Lane();
 			lanes[i].setClean(true);
 		}
-	}
+	} 
 
 	public void start() {
 		Scanner sc = new Scanner(System.in);

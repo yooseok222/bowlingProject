@@ -1,5 +1,6 @@
 package kr.kosa.bowl;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -9,10 +10,12 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 import kr.kosa.bowl.factory.ReceiptFactory;
+import kr.kosa.bowl.file.ProfitFileHandler;
+import kr.kosa.bowl.file.ReceiptFileHandler;
 import lombok.Data;
 
 @Data
-public class Lane {
+public class Lane implements Serializable{
 	private int laneNum; // 레인넘버
 	private int headCnt; // 인원수
 	private int shoesCnt; // 신발갯수
@@ -23,8 +26,11 @@ public class Lane {
 	private List<Map<String, Integer>> orderMenuList;
 	private Profit profit;
 
-	Scanner sc = new Scanner(System.in);
+	transient Scanner sc = new Scanner(System.in);
 
+	
+	
+	
 	/* Lane 생성자 */
 	public Lane() {
 		this.profit = Profit.getInstance();
@@ -35,7 +41,7 @@ public class Lane {
 
 	}
 
-	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */
+	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */ 
 	public void useLane() {
 		if (!isClean) { // 레인이 사용 중이면
 			System.out.println("⚠ 현재 레인은 사용 중입니다. 다른 레인을 선택해주세요.");
@@ -152,6 +158,18 @@ public class Lane {
 		System.out.println("\n🧾 영수증을 생성합니다...");
 		Receipt receipt = ReceiptFactory.createReceipt(this); // 현재 Lane 객체를 전달
 		receipt.showReceipt();
+		
+		 // 1. 개별 영수증 저장
+	    ReceiptFileHandler rfh = new ReceiptFileHandler();
+	    rfh.saveToFile(receipt);
+	    
+	    // 2. 영수증을 Profit 객체에 추가
+	    Profit.getInstance().addReceipt(receipt);
+
+	    // 3. 업데이트된 Profit 저장
+	    ProfitFileHandler profitHandler = new ProfitFileHandler();
+	    profitHandler.saveProfit();
+		
 		return receipt;
 	}
 

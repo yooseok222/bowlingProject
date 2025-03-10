@@ -1,4 +1,4 @@
-package kr.kosa.bowl;
+package kr.kosa.bowl.file;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import kr.kosa.bowl.Snack;
 /**
  * 스낵 파일 처리를 위한 구체 클래스
  */

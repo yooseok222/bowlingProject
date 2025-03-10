@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.kosa.bowl.file.SnackFileHandler;
 import lombok.Data;
 
 @Data
@@ -22,13 +23,14 @@ public class Receipt implements Serializable {
 	private Map<String, Snack> snackMap;
 	private List<Map<String, Integer>> orderMenuList;
 	private Map<String, Integer> mergedOrders; // 통합 주문 내역
-
+	transient SnackFileHandler snackFile = new SnackFileHandler();
+	
 	// 생성자
 	public Receipt(Lane lane) {
 		this.gameFee = 5000;
 		this.shoesFee = 2500;
 		this.lane = lane;
-		this.snackMap = SnackFile.readSnackFile();
+		this.snackMap = snackFile.readSnackMap();
 		orderMenuList = lane.getOrderMenuList();
 		this.totalFee = calculateTotalFee();
 		mergeOrders();

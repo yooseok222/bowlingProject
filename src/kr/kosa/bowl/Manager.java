@@ -1,8 +1,14 @@
 package kr.kosa.bowl;
 
-import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Stream;
+
+import kr.kosa.bowl.file.ProfitFileHandler;
+import kr.kosa.bowl.file.SnackFileHandler;
+
 
 public class Manager {
 
@@ -34,7 +40,7 @@ public class Manager {
 		getAdminMenu();
 	};
 	
-	/** 관리자 메뉴 */
+	/** 관리자 메뉴 */ 
 	private void getAdminMenu() { 
 		
 		while(true) {
@@ -61,6 +67,13 @@ public class Manager {
 	
 	/** 레인 청소 */
 	private void cleanLane() {
+		Menu.printLaneAvail();
+		
+		List<Lane> lanelist = Arrays.asList(Menu.lanes);
+		
+		Stream<Lane> stream = lanelist.stream();
+		stream.filter(l -> l.isClean() == false).forEach(l -> l.setClean(true
+				));
 		
 		System.out.println("쓱싹쓱싹");
 	
@@ -321,5 +334,8 @@ public class Manager {
 	/** 전체 매출 조회 */
 	private void getProfit() {
 		System.out.println("전체 매출 조회 페이지"); 
+		ProfitFileHandler profitHandler = new ProfitFileHandler();
+		Profit loadedProfit = profitHandler.loadProfit();
+		loadedProfit.showReceiptList();
 	};
 }
