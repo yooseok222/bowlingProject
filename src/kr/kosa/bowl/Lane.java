@@ -42,7 +42,7 @@ public class Lane {
 			return;
 		}
 
-		System.out.printf("\n🎳 선택한 레인을 사용합니다...\n",laneNum);
+		System.out.printf("\n🎳 %d번 레인을 사용합니다...\n",laneNum);
 		this.isClean = false; // 사용 중으로 변경
 		startLane(); // 게임 시작
 
