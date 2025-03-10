@@ -43,7 +43,7 @@ public class Manager {
 	/** 관리자 메뉴 */ 
 	private void getAdminMenu() { 
 		
-		while(true) {
+		while(true) {	
 			System.out.println("관리자 메뉴입니다.");
 			System.out.println("1. 레인 청소 | 2. 상품 관리 | 3. 전체 매출 조회 | 0. 초기 화면으로 돌아가기");
 	
@@ -67,15 +67,29 @@ public class Manager {
 	
 	/** 레인 청소 */
 	private void cleanLane() {
-		Menu.printLaneAvail();
-		
-		List<Lane> lanelist = Arrays.asList(Menu.lanes);
-		
-		Stream<Lane> stream = lanelist.stream();
-		stream.filter(l -> l.isClean() == false).forEach(l -> l.setClean(true
-				));
-		
-		System.out.println("쓱싹쓱싹");
+		System.out.println("전체 레인 상태 조회");
+
+		int input = 0;
+		boolean flag = false;
+		do { 
+			Menu.printLaneAvail();
+			
+			System.out.println("청소할 레인의 번호를 입력해주세요"); 
+			System.out.println("0번을 누르시면 관리자 메뉴로 돌아갑니다");
+			input = Integer.parseInt(sc.nextLine())-1;
+			 
+			if(input == -1) { 
+				flag = true;
+				break;
+			}else {
+				if(Menu.lanes[input].isClean() == true) {
+					System.out.println("이미 청소된 레인입니다. 다시 입력해주세요.");
+				}else {
+					Menu.lanes[input].setClean(true);
+					System.out.println("쓱싹쓱싹 - 청소가 완료되었습니다.");
+				}				
+			}
+		}while(!flag);
 	
 	};
 
@@ -334,8 +348,5 @@ public class Manager {
 	/** 전체 매출 조회 */
 	private void getProfit() {
 		System.out.println("전체 매출 조회 페이지"); 
-		ProfitFileHandler profitHandler = new ProfitFileHandler();
-		Profit loadedProfit = profitHandler.loadProfit();
-		loadedProfit.showReceiptList();
 	};
 }
