@@ -19,6 +19,8 @@ public class Manager {
 	SnackFileHandler snackFile = new SnackFileHandler();
 	Map<String, Snack> snackMenu = snackFile.readSnackMap();
 	ProfitFileHandler pf = new ProfitFileHandler();
+	Profit receiptList = pf.readData();
+	
 	
 	private static final String ADMIN_PASSWORD_EMAIL = "admin@bowl.com";
 	//SHA256 Hash Generator로 만든 해시값 (1234)
@@ -397,7 +399,7 @@ public class Manager {
 //		Profit.getInstance().showReceiptList();
 		
 		
-	}
+	} 
 
 
 	/** 전체 매출 조회 */
@@ -405,10 +407,11 @@ public class Manager {
 	    System.out.println("전체 매출 조회 페이지");
 	    
 	    
-	    System.out.println(pf.loadProfit());
+	    System.out.println(receiptList.getReceiptList().toString());
 	    
 		pf.saveProfit();
 	}
+	
 	/** 월별 매출 조회 */
 	private void getProfitByMonth() {
 	

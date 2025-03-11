@@ -2,6 +2,8 @@ package kr.kosa.bowl;
 
 import java.util.Scanner;
 
+import kr.kosa.bowl.file.ProfitFileHandler;
+
 public class Menu {
 
 	static Lane[] lanes = new Lane[6];
@@ -15,7 +17,8 @@ public class Menu {
 
 	public void start() {
 		Scanner sc = new Scanner(System.in);
-		Profit p = Profit.getInstance();
+		ProfitFileHandler pf = new ProfitFileHandler();
+		Profit p = pf.readData();
 
 		while (true) {
 			System.out.println("1. 볼링게임하기\n9. 관리자 메뉴화면\n0. 종료");

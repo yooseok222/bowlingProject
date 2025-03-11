@@ -3,14 +3,17 @@ package kr.kosa.bowl.file;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import kr.kosa.bowl.Profit;
+import kr.kosa.bowl.Receipt;
 
 /**
  * 정산 내역 파일 처리를 위한 구체 클래스
@@ -52,23 +55,22 @@ public class ProfitFileHandler extends FileSaver {
             System.err.println("[ERROR] 정산 파일 저장 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
         }
-    }
+    }	
      
     @Override
-	public Object readData() {
+    public Profit readData() {
+        File file = new File(PROFIT_FILE_PATH);
+
+        if (!file.exists()) {
+            System.out.println("[INFO] profit.txt가 없어 기본 데이터 생성 후 읽음.");
+            initializeFile();
+        }
+
         try (FileInputStream fis = new FileInputStream(PROFIT_FILE_PATH);
              BufferedInputStream bis = new BufferedInputStream(fis);
              ObjectInputStream ois = new ObjectInputStream(bis)) {
-            
-            Object obj = ois.readObject();
-            if (obj instanceof Profit) {
-                System.out.println("[INFO] 정산 데이터를 성공적으로 불러왔습니다.");
-                return obj;
-            } else {
-                System.err.println("[ERROR] 파일에서 읽은 객체가 Profit 인스턴스가 아닙니다.");
-                return Profit.getInstance(); // 기본 인스턴스 반환
-            }
-            
+
+            return (Profit) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("[ERROR] 정산 파일 읽기 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
@@ -103,7 +105,6 @@ public class ProfitFileHandler extends FileSaver {
         if (data instanceof Profit) {
             // 싱글톤 패턴 유지를 위해 인스턴스 복원
             Profit loadedProfit = (Profit) data;
-            Profit.updateInstance(loadedProfit); // 이 메서드는 Profit 클래스에 추가해야 함
             return Profit.getInstance();
         }
         return Profit.getInstance(); // 기본값 반환

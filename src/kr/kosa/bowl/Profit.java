@@ -109,15 +109,6 @@ public class Profit implements Serializable {
 				.toList();
 	}
 	
-	public static void updateInstance(Profit loadedProfit) {
-	    if (instance == null) {
-	        instance = loadedProfit;
-	    } else {
-	        // 기존 인스턴스에 로드된 데이터 병합
-	        instance.receiptList.clear();
-	        instance.receiptList.addAll(loadedProfit.receiptList);
-	    }
-	}
 	
 	@Override
 	public String toString() {
