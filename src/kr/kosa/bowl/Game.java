@@ -13,9 +13,9 @@ public class Game implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 38464829L;
-	static int TOTAL_ROUNDS = 2;
-	List<Integer>[] board;
-	int[][] roundScore;
+	private static int TOTAL_ROUNDS = 2;
+	private List<Integer>[] board;
+	private int[][] roundScore;
 	private List<Map<String, Integer>> orderMenuList;
 
 	Game(List<Map<String, Integer>> orderMenuList) {
