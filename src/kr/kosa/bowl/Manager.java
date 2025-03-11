@@ -6,16 +6,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import kr.kosa.bowl.security.ConfigLoader;
+import kr.kosa.bowl.util.SHA256Util;
+
 public class Manager {
 
 	Scanner sc = new Scanner(System.in);
 
 	Map<String, Snack> snackMenu = new LinkedHashMap<>(SnackFile.readSnackFile());
-	 
 	
-	private static final String ADMIN_PASSWORD_EMAIL = "admin@bowl.com"; 
-	//SHA256 Hash Generator로 만든 해시값 (1234)
-	private static final String ADMIN_PASSWORD_HASH = "03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4";
+	String adminEmail = ConfigLoader.getProperty("ADMIN_EMAIL");
+	String adminPw = ConfigLoader.getProperty("ADMIN_PW");
 	
 	/** 이메일 유효성 검사 - 정규표현식*/
     private boolean isValidEmail(String email) {
@@ -25,29 +26,39 @@ public class Manager {
     
     
     /** 이메일 검사 */
-    public boolean verifyEmail(String email) { 
-    	return email.equals(ADMIN_PASSWORD_EMAIL);
+    public boolean verifyEmail(String inputEmail) {
+    	return inputEmail.equals(adminEmail);
     }
     
     /** 비밀번호 검사 */
     public boolean verifyPassword(String inputPw) {
-    	return SHA256Util.getSHA256Hash(inputPw).equals(ADMIN_PASSWORD_HASH);
+    	return SHA256Util.getSHA256Hash(inputPw).equals(adminPw);
     }
     
     
 	/** 관리자 인증 */
 	public void validateManager() {
+		
+		if(adminEmail == null || adminEmail.isEmpty()) {
+    		throw new IllegalStateException("이메일 설정이 누락되었습니다. 나중에 다시 시도해주세요.");
+    	}
+		
+		if(adminPw == null || adminPw.isEmpty()) {
+    		throw new IllegalStateException("비밀번호 설정이 누락되었습니다. 나중에 다시 시도해주세요.");
+    	}
+		
+		
 		boolean isCorrect = false;
 		
 		do {
  
 			System.out.println("관리자 이메일을 입력하세요 : "); 
-			String inputId = sc.nextLine();
+			String inputEmail = sc.nextLine();
 			
-			if(isValidEmail(inputId)) {
+			if(isValidEmail(inputEmail)) {
 				System.out.println("비밀번호를 입력하세요 : ");  
 				String inputPw = sc.nextLine();	 
-				isCorrect = isValidEmail(inputId) && verifyPassword(inputPw) ? true : false;
+				isCorrect = isValidEmail(inputEmail) && verifyPassword(inputPw) ? true : false;
 				if(!isCorrect) System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
 			}else {
 				System.err.println("이메일 형식이 맞지 않습니다. 다시 입력해주세요");
