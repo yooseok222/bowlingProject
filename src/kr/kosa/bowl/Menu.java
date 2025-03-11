@@ -33,7 +33,7 @@ public class Menu {
 				System.out.println("안녕히 가세요!");
 				return;
 			default:
-				System.out.println("0~2만 입력하세요.");
+				System.out.println("잘못된 숫자를 입력하셨습니다.");
 			}
 
 		}
