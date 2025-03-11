@@ -1,10 +1,6 @@
 package kr.kosa.bowl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -16,9 +12,9 @@ public class Game {
 	List<Integer>[] board;
 	int[][] roundScore;
 	private List<Map<String, Integer>> orderMenuList;
-	
-	Game() {
-		orderMenuList = new ArrayList<>();
+
+	Game(List<Map<String, Integer>> orderMenuList) {
+		this.orderMenuList = orderMenuList;
 	}
 
 	public List<Map<String, Integer>> start(int headCnt, int shoesNum) {
@@ -107,7 +103,7 @@ public class Game {
 
 		System.out.println("\n🎳 게임이 끝났습니다! 다음에 또 봐요~");
 		displayScore();
-		
+
 		return orderMenuList;
 	}
 
