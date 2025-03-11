@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import kr.kosa.bowl.file.ProfitFileHandler;
 import kr.kosa.bowl.security.ConfigLoader;
 import kr.kosa.bowl.util.SHA256Util;
 
@@ -153,7 +154,7 @@ public class Manager {
 		}	
 	}
 
-	/** 상품 추가(오버로딩) */
+	/** 상품 추가 */
 	private void addSnack() {
 		
 		System.out.println("상품을 추가합니다.");
@@ -374,8 +375,73 @@ public class Manager {
 
 	}
 	
-	/** 전체 매출 조회 */
+	/** 매출 조회 */
 	private void getProfit() {
-		System.out.println("전체 매출 조회 페이지"); 
-	};
+		System.out.println("매출 조회 페이지");
+		System.out.println("1. 전체 매출 조회 | 2. 월별 매출 조회 | 3. 가장 많이 팔린 메뉴 0. 관리자 메뉴로 돌아가기 ");
+		String inputMenu = sc.nextLine();
+		
+		switch(inputMenu) {
+			case "1" : getProfitAll();
+				break;
+			case "2" : getProfitByMonth();
+				break;
+			case "3" : getTopSellingMenu();
+				break;
+			case "4" : 
+				break;
+			case "5" : 
+				break;
+			case "0" : 
+				return;
+			default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+				break;
+		}
+		
+//		Profit.getInstance().showReceiptList();
+		
+		
+	}
+
+
+	/** 전체 매출 조회 */
+	private void getProfitAll() {
+	    System.out.println("전체 매출 조회 페이지");
+	    
+	    ProfitFileHandler pf = new ProfitFileHandler();
+	    System.out.println(pf.loadProfit());
+	    
+		pf.saveProfit();
+	}
+	
+	/** 월별 매출 조회 */
+	private void getProfitByMonth() {
+//	
+//		
+//		String inputMonth = "";
+//		
+//		
+//		do {
+//			System.out.println("조회를 원하시는 월을 입력해주세요. 예) 3월 매출 조회 시 -> 3");
+//			inputMonth = sc.nextLine();
+//			
+//			if(inputMonth.isBlank()) {
+//				System.err.println("상품명이 입력되지 않았습니다.");
+//			}else {
+//				System.out.println(inputMonth + "월의 총 매출액은 : "
+//						+ Profit.getInstance().getMonthlyProfit(inputMonth) + "원입니다.");
+//			}	
+//		
+//		}while(inputMonth.isBlank());
+//		
+//		
+//	
+	}
+
+
+	private void getTopSellingMenu() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

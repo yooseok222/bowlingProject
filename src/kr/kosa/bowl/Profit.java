@@ -84,4 +84,39 @@ public class Profit implements Serializable {
 				.limit(3) // 상위 3개만 선택
 				.toList();
 	}
+	
+	@Override
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+
+	    sb.append("총 영수증 수: ").append(receiptList.size()).append("\n");
+	    sb.append("==== 영수증 목록 ====\n");
+
+	    int index = 1;
+	    for (Receipt receipt : receiptList) {
+	        sb.append("\n--- 영수증 #").append(index).append(" ---\n");
+	        sb.append("레인 번호: ").append(Integer.toString(receipt.getLane().getLaneNum())).append("\n");
+	        sb.append("날짜: ").append(receipt.getLane().getSelectedAt()).append("\n");
+	        sb.append("인원수: ").append(receipt.getLane().getHeadCnt()).append("\n");
+	        sb.append("신발 개수: ").append(receipt.getLane().getShoesCnt()).append("\n");
+	        sb.append("게임 비용: ").append(receipt.getGameFee()).append("\n");
+	        sb.append("신발 비용: ").append(receipt.getShoesFee()).append("\n");
+	        sb.append("총 비용: ").append(receipt.getTotalFee()).append("\n");
+
+	        // 주문 내역 출력
+	        Map<String, Integer> orders = receipt.getMergedOrders();
+	        if (orders != null && !orders.isEmpty()) {
+	            sb.append("주문 내역:\n");
+	            for (Map.Entry<String, Integer> entry : orders.entrySet()) {
+	                sb.append(" - ").append(entry.getKey()).append(": ").append(entry.getValue()).append("개\n");
+	            }
+	        } else { 
+	            sb.append("주문 내역 없음\n");
+	        }
+
+	        index++;
+	    }
+	    
+	    return sb.toString();
+	}
 }

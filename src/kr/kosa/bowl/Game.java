@@ -1,5 +1,6 @@
 package kr.kosa.bowl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +8,11 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 
-public class Game {
+public class Game implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 38464829L;
 	static int TOTAL_ROUNDS = 2;
 	List<Integer>[] board;
 	int[][] roundScore;
