@@ -153,7 +153,7 @@ public class Manager {
 		}	
 	}
 
-	/** 상품 추가(오버로딩) */
+	/** 상품 추가 */
 	private void addSnack() {
 		
 		System.out.println("상품을 추가합니다.");
@@ -237,7 +237,7 @@ public class Manager {
 				String answer = sc.nextLine();
 				System.out.println(answer.toLowerCase());
 				if(answer.toUpperCase().equals("Y")) {
-					snackMenu.remove(snackName);
+					snackMenu.remove(snackName);s
 					SnackFile.makeSnackFile(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
