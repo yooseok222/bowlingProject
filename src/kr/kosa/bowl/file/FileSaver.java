@@ -56,7 +56,7 @@ public abstract class FileSaver {
 	
 	//파일에서 데이터 읽기
 	public Object loadFromFile() {
-		//1. 파일 존재 여부 확인
+		//1. 파일 존재 여부 확인 
 		if(!isFileExists()) {
 			System.out.println("[INFO] " + getFileName() + "가 없어 초기 데이터 생성 후 읽음.");
             initializeFile();

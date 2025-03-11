@@ -1,5 +1,6 @@
 package kr.kosa.bowl;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,7 +13,11 @@ import kr.kosa.bowl.factory.ReceiptFactory;
 import lombok.Data;
 
 @Data
-public class Lane {
+public class Lane implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3947529374L;
 	private int laneNum; // 레인넘버
 	private int headCnt; // 인원수
 	private int shoesCnt; // 신발갯수
@@ -23,7 +28,7 @@ public class Lane {
 	private List<Map<String, Integer>> orderMenuList;
 	private Profit profit;
 
-	Scanner sc = new Scanner(System.in);
+	transient Scanner sc = new Scanner(System.in);
 
 	/* Lane 생성자 */
 	public Lane(Profit profit) {

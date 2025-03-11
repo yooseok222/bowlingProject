@@ -26,11 +26,22 @@ public class ProfitFileHandler extends FileSaver {
         super(filePath);
     }
     
+//    @Override
+//    protected void initializeFile() {
+//        // 초기 Profit 객체 생성
+//        Profit emptyProfit = Profit.getInstance();
+//        writeData(emptyProfit); 
+//    }
+//    
+    
     @Override
     protected void initializeFile() {
-        // 초기 Profit 객체 생성
-        Profit emptyProfit = Profit.getInstance();
-        writeData(emptyProfit); 
+        java.io.File file = new java.io.File(filePath);
+        if (!file.exists() || file.length() == 0) {
+            // 파일이 없거나 비어있을 때만 초기화
+            Profit emptyProfit = Profit.getInstance();
+            writeData(emptyProfit);
+        }
     }
     
     @Override

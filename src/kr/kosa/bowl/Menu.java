@@ -2,6 +2,8 @@ package kr.kosa.bowl;
 
 import java.util.Scanner;
 
+import kr.kosa.bowl.file.ProfitFileHandler;
+
 public class Menu {
 
 	static Lane[] lanes = new Lane[6];
@@ -30,6 +32,8 @@ public class Menu {
 				selectLane(sc);
 				break;
 			case 0:
+				ProfitFileHandler pf = new ProfitFileHandler();
+				pf.saveProfit();
 				System.out.println("안녕히 가세요!");
 				return;
 			default:
