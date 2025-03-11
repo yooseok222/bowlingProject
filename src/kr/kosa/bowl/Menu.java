@@ -5,17 +5,18 @@ import java.util.Scanner;
 public class Menu {
 
 	static Lane[] lanes = new Lane[6];
+	Profit profit;
 
 	Menu() {
+		profit = Profit.getInstance();
 		for (int i = 0; i < 6; i++) {
-			lanes[i] = new Lane();
+			lanes[i] = new Lane(profit);
 			lanes[i].setClean(true);
 		}
 	}
 
 	public void start() {
 		Scanner sc = new Scanner(System.in);
-		Profit p = Profit.getInstance();
 
 		while (true) {
 			System.out.println("1. 볼링게임하기\n9. 관리자 메뉴화면\n0. 종료");
@@ -46,7 +47,6 @@ public class Menu {
 				int laneNum = Integer.parseInt(sc.nextLine());
 
 				if (laneNum <= 6 && laneNum >= 1) {
-					Game g = new Game();
 					lanes[laneNum - 1].setLaneNum(laneNum); // laneNum 설정
 					lanes[laneNum-1].useLane();
 					break;
