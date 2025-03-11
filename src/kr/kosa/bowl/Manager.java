@@ -68,7 +68,7 @@ public class Manager {
 		
 		while(true) {	
 			System.out.println("관리자 메뉴입니다.");
-			System.out.println("1. 레인 청소 | 2. 상품 관리 | 3. 전체 매출 조회 | 0. 초기 화면으로 돌아가기");
+			System.out.println("1. 레인 청소 | 2. 상품 관리 | 3. 매출 조회 | 0. 초기 화면으로 돌아가기");
 	
 			String inputMenu = sc.nextLine();
 			
@@ -368,11 +368,68 @@ public class Manager {
 
 	}
 	
-	/** 전체 매출 조회 */
+	/** 매출 조회 */
 	private void getProfit() {
-		System.out.println("전체 매출 조회 페이지");
-		ProfitFileHandler pf = new ProfitFileHandler();
-		pf.loadProfit();
+		System.out.println("매출 조회 페이지");
+		System.out.println("1. 전체 매출 조회 | 2. 월별 매출 조회 | 3. 가장 많이 팔린 메뉴 0. 관리자 메뉴로 돌아가기 ");
+		String inputMenu = sc.nextLine();
+		
+		switch(inputMenu) {
+			case "1" : getProfitAll();
+				break;
+			case "2" : getProfitByMonth();
+				break;
+			case "3" : getTopSellingMenu();
+				break;
+			case "4" : 
+				break;
+			case "5" : 
+				break;
+			case "0" : 
+				return;
+			default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+				break;
+		}
+		
+//		Profit.getInstance().showReceiptList();
+		
+		
+	}
+
+
+	private void getProfitAll() {
+		// TODO Auto-generated method stub
 		
 	};
+
+	/** 월별 매출 조회 */
+	private void getProfitByMonth() {
+		System.out.println("조회를 원하시는 월을 입력해주세요. 예) 3월 매출 조회 시 -> 3");
+		
+		String inputMonth = "";
+		
+		
+		do {
+			System.out.print("수정하실 상품의 새 이름을 입력해주세요");
+			inputMonth = sc.nextLine();
+			
+			if(inputMonth.isBlank()) {
+				System.err.println("상품명이 입력되지 않았습니다.");
+			}else {
+				System.out.println(inputMonth + "월의 총 매출액은 : "
+						+ Profit.getInstance().getMonthlyProfit(inputMonth) + "원입니다.");
+			}	
+		
+		}while(inputMonth.isBlank());
+		
+		
+	
+	}
+
+
+	private void getTopSellingMenu() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

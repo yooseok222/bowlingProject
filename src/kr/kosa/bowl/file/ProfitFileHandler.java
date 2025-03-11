@@ -53,8 +53,8 @@ public class ProfitFileHandler extends FileSaver {
     }
     
     @Override
-    protected Object readData() {
-        try (FileInputStream fis = new FileInputStream(filePath);
+	public Object readData() {
+        try (FileInputStream fis = new FileInputStream(PROFIT_FILE_PATH);
              BufferedInputStream bis = new BufferedInputStream(fis);
              ObjectInputStream ois = new ObjectInputStream(bis)) {
             

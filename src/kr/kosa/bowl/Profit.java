@@ -36,9 +36,6 @@ public class Profit implements Serializable {
 	// 영수증 추가
 	public void addReceipt(Receipt receipt) {
 		receiptList.add(receipt);
-	    // 3. 업데이트된 Profit 저장
-	    ProfitFileHandler profitHandler = new ProfitFileHandler();
-	    profitHandler.saveProfit();
 	}
 
 	// 영수증 리스트 출력
@@ -67,11 +64,32 @@ public class Profit implements Serializable {
 	}
 
 	// 특정 월의 총 수익 계산
-	public int getMonthlyProfit(int month) {
+	public int getMonthlyProfit(String inputMonth) {
+		int month = Integer.parseInt(inputMonth);
+//		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+//				.mapToInt(Receipt::getTotalFee).sum();
+		
+		//게임비
+//		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+//				.mapToInt(Receipt::getGameFee).sum();
+	
+		//대화비
+//		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+//				.mapToInt(Receipt::getShoesFee).sum();
+	
+//		//간식비용
+//		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+//				.flatMap(map -> entrySet().stream()).map(Map.Entry::getValue).sum();
+				
 		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
-				.mapToInt(Receipt::getTotalFee).sum();
+				.flatMap(receipt -> receipt.getMergedOrders().entrySet().stream())
+				.mapToInt(Map.Entry::getValue).sum();
+		
+		
+	
 	}
-
+	
+	
 	// 날짜에서 월 추출
 	private int getMonth(String date) {
 		return Integer.parseInt(date.split("\\.")[1]);
