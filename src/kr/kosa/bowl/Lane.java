@@ -28,8 +28,8 @@ public class Lane {
 	/* Lane 생성자 */
 	public Lane(Profit profit) {
 		this.profit = profit;
-		this.game = new Game();
 		this.orderMenuList = new ArrayList<>();
+		this.game = new Game(orderMenuList);
 		this.selectedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 		this.gameCnt = 0;
 
@@ -41,7 +41,7 @@ public class Lane {
 			System.err.println("⚠ 현재 레인은 사용 중입니다. 다른 레인을 선택해주세요.");
 			return;
 		}
-
+		
 		System.out.printf("\n🎳 %d번 레인을 사용합니다...\n", laneNum);
 		this.isClean = false; // 사용 중으로 변경
 		startLane(); // 게임 시작
@@ -59,8 +59,9 @@ public class Lane {
 		}
 		// 게임이 진행된 경우에만 영수증을 추가
 		Receipt receipt = showReceiptInLane();
-		receipt.showReceipt();
 		if (receipt != null) {
+			receipt.showReceipt();		//콘솔에 영수증 print
+			receiptPrintOrSave(receipt); // 영수증을 파일로 저장할지 선택
 			profit.addReceipt(receipt);
 		}
 
@@ -168,5 +169,32 @@ public class Lane {
 			return null; // 영수증을 생성하지 않음
 		}
 	}
+	
+	/* 🧾 영수증을 파일로 저장할지 여부 선택 */
+	private void receiptPrintOrSave(Receipt receipt) {
+		while (true) {
+			try {
+				System.out.println("\n✨🧾====== 영수증 옵션 ======🧾✨");
+				System.out.println("💾 1. 영수증을 파일로 저장");
+				System.out.println("🚪 2. 그냥 나가기");
+				System.out.println("================================");
+				System.out.print("🔹 원하는 옵션을 선택하세요 (1, 2) ▶ ");
 
+				int cmd = Integer.parseInt(sc.nextLine().trim());
+
+				if (cmd == 1) {
+					//saveReceiptToFile(receipt);	//영수증 파일로 출력하는 함수 (아직 미완성)
+					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
+					break;
+				} else if (cmd == 2) {
+					System.out.println("\n🚪 영수증을 저장하지 않고 종료합니다.");
+					break;
+				} else {
+					System.out.println("⚠ 1 또는 2를 입력해주세요.");
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("유효한 숫자를 입력하세요.");
+			}
+		}
+	}
 }
