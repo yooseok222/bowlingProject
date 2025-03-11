@@ -33,6 +33,7 @@ public class ProfitFileHandler extends FileSaver {
         writeData(emptyProfit); 
     }
     
+
     @Override
     protected void writeData(Object data) {
         if (!(data instanceof Profit)) {
@@ -52,7 +53,7 @@ public class ProfitFileHandler extends FileSaver {
             e.printStackTrace();
         }
     }
-    
+     
     @Override
 	public Object readData() {
         try (FileInputStream fis = new FileInputStream(PROFIT_FILE_PATH);

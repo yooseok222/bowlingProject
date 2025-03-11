@@ -31,7 +31,7 @@ public class SnackFileHandler extends FileSaver {
         snackMap.put("땅콩", new Snack("땅콩", 3000, 100));
         writeData(snackMap);
     }
-    
+        
     @Override
     protected void writeData(Object data) {
         if (!(data instanceof Map)) {
