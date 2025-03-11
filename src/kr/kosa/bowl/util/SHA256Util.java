@@ -1,4 +1,4 @@
-package kr.kosa.bowl;
+package kr.kosa.bowl.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
