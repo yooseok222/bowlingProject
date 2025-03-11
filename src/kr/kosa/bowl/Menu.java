@@ -54,7 +54,9 @@ public class Menu {
 					System.out.println("1~6만 입력하실 수 있습니다.");
 				}
 			} catch (NumberFormatException e) {
-				System.out.println("1~6만 입력하실 수 있습니다.");
+				System.err.println("1~6만 입력하실 수 있습니다.");
+			} catch (IllegalArgumentException e) {
+				System.err.println("");
 			}
 			
 		}

@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import kr.kosa.bowl.util.SHA256Util;
+
 public class Manager {
 
 	Scanner sc = new Scanner(System.in);
