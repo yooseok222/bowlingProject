@@ -26,8 +26,8 @@ public class Lane {
 	Scanner sc = new Scanner(System.in);
 
 	/* Lane 생성자 */
-	public Lane() {
-		this.profit = Profit.getInstance();
+	public Lane(Profit profit) {
+		this.profit = profit;
 		this.game = new Game();
 		this.orderMenuList = new ArrayList<>();
 		this.selectedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
