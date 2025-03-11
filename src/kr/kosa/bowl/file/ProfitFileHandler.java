@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 import kr.kosa.bowl.Profit;
 
@@ -29,7 +30,7 @@ public class ProfitFileHandler extends FileSaver {
     protected void initializeFile() {
         // 초기 Profit 객체 생성
         Profit emptyProfit = Profit.getInstance();
-        writeData(emptyProfit);
+        writeData(emptyProfit); 
     }
     
     @Override
@@ -76,9 +77,15 @@ public class ProfitFileHandler extends FileSaver {
     
     @Override
     protected boolean validateData(Object data) {
-        return super.validateData(data) && data instanceof Profit;
+        if (data instanceof Profit) {
+            return true; // Profit 인스턴스는 허용
+        } else if (data instanceof List) {
+            // List<Receipt>도 허용하도록 부모 클래스의 메서드 사용
+            return super.validateData(data);
+        }
+        return false;
     }
-    
+
     /**
      * 정산 데이터 저장 편의 메서드
      */
@@ -90,7 +97,7 @@ public class ProfitFileHandler extends FileSaver {
     /**
      * 정산 데이터 로드 편의 메서드
      */
-    public Profit loadProfit() {
+    public Profit loadProfit() { 
         Object data = loadFromFile();
         if (data instanceof Profit) {
             // 싱글톤 패턴 유지를 위해 인스턴스 복원

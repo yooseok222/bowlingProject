@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.kosa.bowl.file.FileSaver;
 import kr.kosa.bowl.file.ProfitFileHandler;
 import lombok.ToString;
 
@@ -19,7 +20,11 @@ public class Profit implements Serializable {
 	private static Profit instance; // 유일한 인스턴스
 
 	private List<Receipt> receiptList;
-
+	
+	public List<Receipt> getReceiptList() {
+	    return new ArrayList<>(this.receiptList); // 방어적 복사본 반환
+	}
+	
 	// 생성자를 private으로 설정 -> new 연산 불가
 	private Profit() {
 		this.receiptList = new ArrayList<>();
@@ -66,8 +71,9 @@ public class Profit implements Serializable {
 	// 특정 월의 총 수익 계산
 	public int getMonthlyProfit(String inputMonth) {
 		int month = Integer.parseInt(inputMonth);
-//		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
-//				.mapToInt(Receipt::getTotalFee).sum();
+
+		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+				.mapToInt(Receipt::getTotalFee).sum();
 		
 		//게임비
 //		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
@@ -80,13 +86,6 @@ public class Profit implements Serializable {
 //		//간식비용
 //		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
 //				.flatMap(map -> entrySet().stream()).map(Map.Entry::getValue).sum();
-				
-		return receiptList.stream().filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
-				.flatMap(receipt -> receipt.getMergedOrders().entrySet().stream())
-				.mapToInt(Map.Entry::getValue).sum();
-		
-		
-	
 	}
 	
 	
@@ -103,7 +102,7 @@ public class Profit implements Serializable {
 			for (Map.Entry<String, Integer> entry : receipt.getMergedOrders().entrySet()) {
 				totalOrders.put(entry.getKey(), totalOrders.getOrDefault(entry.getKey(), 0) + entry.getValue());
 			}
-		}
+		} 
 
 		return totalOrders.entrySet().stream().sorted((a, b) -> b.getValue() - a.getValue()) // 내림차순 정렬
 				.limit(3) // 상위 3개만 선택
@@ -118,5 +117,40 @@ public class Profit implements Serializable {
 	        instance.receiptList.clear();
 	        instance.receiptList.addAll(loadedProfit.receiptList);
 	    }
+	}
+	
+	@Override
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+
+	    sb.append("총 영수증 수: ").append(receiptList.size()).append("\n");
+	    sb.append("==== 영수증 목록 ====\n");
+
+	    int index = 1;
+	    for (Receipt receipt : receiptList) {
+	        sb.append("\n--- 영수증 #").append(index).append(" ---\n");
+	        sb.append("레인 번호: ").append(Integer.toString(receipt.getLane().getLaneNum())).append("\n");
+	        sb.append("날짜: ").append(receipt.getLane().getSelectedAt()).append("\n");
+	        sb.append("인원수: ").append(receipt.getLane().getHeadCnt()).append("\n");
+	        sb.append("신발 개수: ").append(receipt.getLane().getShoesCnt()).append("\n");
+	        sb.append("게임 비용: ").append(receipt.getGameFee()).append("\n");
+	        sb.append("신발 비용: ").append(receipt.getShoesFee()).append("\n");
+	        sb.append("총 비용: ").append(receipt.getTotalFee()).append("\n");
+
+	        // 주문 내역 출력
+	        Map<String, Integer> orders = receipt.getMergedOrders();
+	        if (orders != null && !orders.isEmpty()) {
+	            sb.append("주문 내역:\n");
+	            for (Map.Entry<String, Integer> entry : orders.entrySet()) {
+	                sb.append(" - ").append(entry.getKey()).append(": ").append(entry.getValue()).append("개\n");
+	            }
+	        } else {
+	            sb.append("주문 내역 없음\n");
+	        }
+
+	        index++;
+	    }
+	    
+	    return sb.toString();
 	}
 }

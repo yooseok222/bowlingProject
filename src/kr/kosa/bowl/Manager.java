@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
+import kr.kosa.bowl.file.FileSaver;
 import kr.kosa.bowl.file.ProfitFileHandler;
+import kr.kosa.bowl.file.SerializedViewer;
 import kr.kosa.bowl.file.SnackFileHandler;
 
 
@@ -17,6 +19,8 @@ public class Manager {
 	SnackFileHandler snackFile = new SnackFileHandler();
 	Map<String, Snack> snackMenu = snackFile.readSnackMap();
 
+	ProfitFileHandler fs = new ProfitFileHandler();
+	
 	private static final String ADMIN_PASSWORD_EMAIL = "admin@bowl.com";
 	//SHA256 Hash Generator로 만든 해시값 (1234)
 	private static final String ADMIN_PASSWORD_HASH = "03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4";
@@ -397,20 +401,24 @@ public class Manager {
 	}
 
 
+	/** 전체 매출 조회 */
 	private void getProfitAll() {
-		// TODO Auto-generated method stub
-		
-	};
-
+	    System.out.println("전체 매출 조회 페이지");
+	    
+	    ProfitFileHandler pf = new ProfitFileHandler();
+	    System.out.println(pf.loadProfit());
+	    
+		pf.saveProfit();
+	}
 	/** 월별 매출 조회 */
 	private void getProfitByMonth() {
-		System.out.println("조회를 원하시는 월을 입력해주세요. 예) 3월 매출 조회 시 -> 3");
+	
 		
 		String inputMonth = "";
 		
 		
 		do {
-			System.out.print("수정하실 상품의 새 이름을 입력해주세요");
+			System.out.println("조회를 원하시는 월을 입력해주세요. 예) 3월 매출 조회 시 -> 3");
 			inputMonth = sc.nextLine();
 			
 			if(inputMonth.isBlank()) {

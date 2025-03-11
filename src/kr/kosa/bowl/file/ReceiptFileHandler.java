@@ -60,7 +60,7 @@ public class ReceiptFileHandler extends FileSaver{
              BufferedInputStream bis = new BufferedInputStream(fis);
              ObjectInputStream ois = new ObjectInputStream(bis)) {
             
-            return ois.readObject();
+            return ois.readObject(); 
             
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("[ERROR] 영수증 파일 읽기 중 오류 발생: " + e.getMessage());

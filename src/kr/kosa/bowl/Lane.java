@@ -170,10 +170,10 @@ public class Lane implements Serializable{
 	    ReceiptFileHandler rfh = new ReceiptFileHandler();
 	    rfh.saveToFile(receipt);
 	    
-	    // 2. 영수증을 Profit 객체에 추가
-	    Profit.getInstance().addReceipt(receipt);
-
-
+//	    // 2. 영수증을 Profit 객체에 추가
+//	    Profit.getInstance().addReceipt(receipt);
+//
+//
 		
 		return receipt;
 	}
