@@ -75,4 +75,8 @@ mvnw
 mvnw.cmd
 /.metadata/
 
+# env 파일
 .env
+
+# 관리자 설정
+credentials.properties
