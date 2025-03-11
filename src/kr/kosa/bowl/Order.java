@@ -23,7 +23,7 @@ public class Order {
 	// 상품 주문
 	public Map<String, Integer> orderMenu() {
 		while (true) {
-			System.out.println("주문 메뉴에 오신 걸 환영합니다.");
+			System.out.println("\n✨🌟====== 주문 메뉴에 오신 걸 환영합니다. ======🌟✨");
 			System.out.println("입력하신 번호로 메뉴를 선택해주세요.");
 			System.out.println("1. 전체 메뉴 조회");
 			System.out.println("2. 장바구니에 메뉴 담기");
@@ -60,9 +60,17 @@ public class Order {
 
 	// 전체 메뉴 출력
 	private void printSnackMap() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n========== [ 전체 상품 조회] ==========\n");
+		sb.append(String.format("%-11s | %-11s | %-11s\n", "상품명", "가 격", "수 량"));
+		sb.append("---------------------------------------\n");
 		for (String key : snackMap.keySet()) {
-			System.out.println(snackMap.get(key));
+			Snack snack = snackMap.get(key);
+			sb.append(String.format("%-12s | %-13s | %-12s\n", snack.getSnackName(), snack.getSnackPrice(),
+					snack.getSnackCnt()));
 		}
+		sb.append("=======================================\n");
+		System.out.println(sb);
 	}
 
 	// 장바구니 현황 출력
@@ -71,9 +79,22 @@ public class Order {
 			System.out.println("[INFO] 장바구니가 비어 있습니다.");
 			return;
 		}
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n========== [ 장바구니 현황 ] ==========\n");
+
+		// 헤더
+		sb.append(String.format("%-20s | %s\n", "메뉴", "수량"));
+		sb.append("---------------------------------------\n");
+
+		// 데이터 출력
 		for (Map.Entry<String, Integer> order : orderMap.entrySet()) {
-			System.out.println(order);
+			sb.append(String.format("%-20s | %d\n", order.getKey(), order.getValue()));
 		}
+
+		sb.append("=======================================\n");
+
+		System.out.println(sb);
 	}
 
 	// 장바구니에 간식 추가
