@@ -58,11 +58,13 @@ public class Lane {
 			isGameFinished = selectSnackOrBowl(); // 간식 또는 게임 선택
 		}
 		// 게임이 진행된 경우에만 영수증을 추가
-	    Receipt receipt = showReceiptInLane();
-	    if (receipt != null) {
-	        profit.addReceipt(receipt);
-	    }
-		//profit.addReceipt(showReceiptInLane()); // 영수증을 출력하고 바로 총매출에 추가
+		Receipt receipt = showReceiptInLane();
+		receipt.showReceipt();
+		if (receipt != null) {
+			profit.addReceipt(receipt);
+		}
+
+		// profit.addReceipt(showReceiptInLane()); // 영수증을 출력하고 바로 총매출에 추가
 	}
 
 	// 1. 인원수 입력 및 신발선택
@@ -123,12 +125,12 @@ public class Lane {
 					selectBowl();
 					return false; // 게임 종료 아님
 				} else if (cmd == 3) {
-	                if (gameCnt == 0) { // 게임을 진행하지 않았을 경우
-	                    System.err.println("⚠ 게임을 진행하지 않아 결제를 진행할 수 없습니다.");
-	                    return false; // 결제하지 않고 메뉴로 돌아감
-	                }
-	                return true; // 게임 종료
-	            } else {
+					if (gameCnt == 0) { // 게임을 진행하지 않았을 경우
+						System.err.println("⚠ 게임을 진행하지 않아 결제를 진행할 수 없습니다.");
+						return false; // 결제하지 않고 메뉴로 돌아감
+					}
+					return true; // 게임 종료
+				} else {
 					System.out.println("⚠ 1, 2 또는 3을 입력해주세요.");
 				}
 			} catch (NumberFormatException e) {
@@ -160,7 +162,6 @@ public class Lane {
 		if (gameCnt > 0) {
 			System.out.println("\n🧾 영수증을 생성합니다...");
 			Receipt receipt = ReceiptFactory.createReceipt(this); // 현재 Lane 객체를 전달
-			receipt.showReceipt();
 			return receipt;
 		} else {
 			System.out.println("⚠ 게임을 진행하지 않아 게임 비용이 청구되지 않습니다.");
