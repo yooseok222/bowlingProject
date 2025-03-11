@@ -237,7 +237,7 @@ public class Manager {
 				String answer = sc.nextLine();
 				System.out.println(answer.toLowerCase());
 				if(answer.toUpperCase().equals("Y")) {
-					snackMenu.remove(snackName);s
+					snackMenu.remove(snackName);
 					SnackFile.makeSnackFile(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
