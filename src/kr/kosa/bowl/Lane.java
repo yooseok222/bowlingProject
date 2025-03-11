@@ -15,7 +15,7 @@ import kr.kosa.bowl.file.ReceiptFileHandler;
 import lombok.Data;
 
 @Data
-public class Lane implements Serializable{
+public class Lane implements Serializable {
 	private int laneNum; // 레인넘버
 	private int headCnt; // 인원수
 	private int shoesCnt; // 신발갯수
@@ -28,12 +28,9 @@ public class Lane implements Serializable{
 
 	transient Scanner sc = new Scanner(System.in);
 
-	
-	
-	
 	/* Lane 생성자 */
-	public Lane() {
-		this.profit = Profit.getInstance();
+	public Lane(Profit profit) { // 추가
+		this.profit = profit; // 추가
 		this.game = new Game();
 		this.orderMenuList = new ArrayList<>();
 		this.selectedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
@@ -41,14 +38,14 @@ public class Lane implements Serializable{
 
 	}
 
-	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */ 
+	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */
 	public void useLane() {
 		if (!isClean) { // 레인이 사용 중이면
 			System.out.println("⚠ 현재 레인은 사용 중입니다. 다른 레인을 선택해주세요.");
 			return;
 		}
 
-		System.out.printf("\n🎳 %d번 레인을 사용합니다...\n",laneNum);
+		System.out.printf("\n🎳 %d번 레인을 사용합니다...\n", laneNum);
 		this.isClean = false; // 사용 중으로 변경
 		startLane(); // 게임 시작
 
@@ -156,25 +153,25 @@ public class Lane implements Serializable{
 	/* 3. 결제 및 영수증 출력 */
 	private Receipt showReceipt() {
 		System.out.println("\n🧾 영수증을 생성합니다...");
-		 // 게임을 진행한 경우에만 비용 반영
-	    if (gameCnt > 0) {
-	    } else {
-	        System.out.println("⚠ 게임을 진행하지 않아 게임 비용이 청구되지 않습니다.");
-	        //this.headCnt = 0;
-	        //this.shoesCnt = 0;
-	    }
+		// 게임을 진행한 경우에만 비용 반영
+		if (gameCnt > 0) {
+		} else {
+			System.out.println("⚠ 게임을 진행하지 않아 게임 비용이 청구되지 않습니다.");
+			// this.headCnt = 0;
+			// this.shoesCnt = 0;
+		}
 		Receipt receipt = ReceiptFactory.createReceipt(this); // 현재 Lane 객체를 전달
 		receipt.showReceipt();
-		
-		 // 1. 개별 영수증 저장
-	    ReceiptFileHandler rfh = new ReceiptFileHandler();
-	    rfh.saveToFile(receipt);
-	    
+
+		// 1. 개별 영수증 저장
+		ReceiptFileHandler rfh = new ReceiptFileHandler();
+		rfh.saveToFile(receipt);
+
 //	    // 2. 영수증을 Profit 객체에 추가
-	    Profit.getInstance().addReceipt(receipt);
+		Profit.getInstance().addReceipt(receipt);
 //
 //
-		
+
 		return receipt;
 	}
 

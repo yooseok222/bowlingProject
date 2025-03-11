@@ -7,25 +7,32 @@ import kr.kosa.bowl.file.ProfitFileHandler;
 public class Menu {
 
 	static Lane[] lanes = new Lane[6];
+	private Profit profit; // 추가
 
 	Menu() {
+		ProfitFileHandler pf = new ProfitFileHandler();
+		// 추가
+		if (pf.readData() == null) {
+			profit = Profit.getInstance();
+		} else {
+			profit = pf.readData();
+		}
+
 		for (int i = 0; i < 6; i++) {
-			lanes[i] = new Lane();
+			lanes[i] = new Lane(profit); // 추가
 			lanes[i].setClean(true);
 		}
-	} 
+	}
 
 	public void start() {
 		Scanner sc = new Scanner(System.in);
-		ProfitFileHandler pf = new ProfitFileHandler();
-		Profit p = pf.readData();
 
 		while (true) {
 			System.out.println("1. 볼링게임하기\n9. 관리자 메뉴화면\n0. 종료");
 			int input = Integer.parseInt(sc.nextLine());
 			switch (input) {
 			case 9:
-				Manager manager = new Manager();
+				Manager manager = new Manager(profit); // 추가
 				manager.validateManager();
 				break;
 			case 1:
@@ -51,7 +58,7 @@ public class Menu {
 				if (laneNum <= 6 && laneNum >= 1) {
 					Game g = new Game();
 					lanes[laneNum - 1].setLaneNum(laneNum); // laneNum 설정
-					lanes[laneNum-1].useLane();
+					lanes[laneNum - 1].useLane();
 					break;
 				} else {
 					System.out.println("1~6만 입력하실 수 있습니다.");
@@ -59,7 +66,7 @@ public class Menu {
 			} catch (NumberFormatException e) {
 				System.out.println("1~6만 입력하실 수 있습니다.");
 			}
-			
+
 		}
 
 	}
@@ -67,7 +74,7 @@ public class Menu {
 	static void printLaneAvail() {
 		System.out.println("=====================================");
 		for (int i = 0; i < lanes.length; i++) {
-			System.out.printf("%10d %10s\n", i+1 , lanes[i].isClean() ? "사용가능" : "사용불가(청소필요)");
+			System.out.printf("%10d %10s\n", i + 1, lanes[i].isClean() ? "사용가능" : "사용불가(청소필요)");
 		}
 		System.out.println("=====================================");
 	}
