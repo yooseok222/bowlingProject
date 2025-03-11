@@ -49,7 +49,6 @@ public class Game implements Serializable{
 				int score = 0;
 				int roll = 0;
 				int pin = 10;
-				boolean isStrike = false;
 				// 점수 계산
 				while (roll < 2) {
 					displayScore();
@@ -58,10 +57,7 @@ public class Game implements Serializable{
 					score += nowScore;
 					pin -= nowScore;
 
-					if (isStrike)
-						board[player].add(0);
-					else
-						board[player].add(nowScore);
+					board[player].add(nowScore);
 
 					if (beforeScore[player] == '/' && roll == 0) { // 이전에 스페어
 						roundScore[player][round] += nowScore;
@@ -73,7 +69,8 @@ public class Game implements Serializable{
 						if (roll == 0) {
 							System.out.println("🎯 스트라이크!");
 							beforeScore[player] = 'x';
-							isStrike = true;
+							board[player].add(0);
+							break;
 						} else {
 							System.out.println("🎳 스페어!");
 							beforeScore[player] = '/';
@@ -121,7 +118,7 @@ public class Game implements Serializable{
 			try {
 				System.out.println("🎳 공을 굴리세요!");
 				int userRoll = Integer.parseInt(sc.nextLine()) % (maxPins + 1);
-
+				
 				score = maxPins - Math.abs(randomRoll - userRoll);
 				System.out.println("🎳 " + score + "개의 핀을 쓰러뜨렸습니다!");
 

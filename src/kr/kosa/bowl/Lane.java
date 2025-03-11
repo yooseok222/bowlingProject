@@ -46,7 +46,7 @@ public class Lane implements Serializable {
 			System.err.println("⚠ 현재 레인은 사용 중입니다. 다른 레인을 선택해주세요.");
 			return;
 		}
-		
+
 		System.out.printf("\n🎳 %d번 레인을 사용합니다...\n", laneNum);
 		this.isClean = false; // 사용 중으로 변경
 		startLane(); // 게임 시작
@@ -65,12 +65,11 @@ public class Lane implements Serializable {
 		// 게임이 진행된 경우에만 영수증을 추가
 		Receipt receipt = showReceiptInLane();
 		if (receipt != null) {
-			receipt.showReceipt();		//콘솔에 영수증 print
+			receipt.showReceipt(); // 콘솔에 영수증 print
 			receiptPrintOrSave(receipt); // 영수증을 파일로 저장할지 선택
 			profit.addReceipt(receipt);
 		}
 
-		// profit.addReceipt(showReceiptInLane()); // 영수증을 출력하고 바로 총매출에 추가
 	}
 
 	// 1. 인원수 입력 및 신발선택
@@ -83,10 +82,11 @@ public class Lane implements Serializable {
 				if (this.headCnt < 1 || this.headCnt > 4) {
 					System.out.println("인원수는 1~4명 입니다. 다시 입력하세요.");
 				} else {
+					System.out.println("입력한 인원수는 " + headCnt + " 명 입니다");
 					break;
 				}
 			} catch (NumberFormatException e) {
-				System.out.println("유효한 숫자를 입력하세요.");
+				System.err.println("유효한 숫자를 입력하세요.");
 			}
 		}
 
@@ -97,12 +97,13 @@ public class Lane implements Serializable {
 				this.shoesCnt = Integer.parseInt(sc.nextLine().trim());
 				// 신발 개수가 인원 수보다 많으면 다시 입력 요구
 				if (this.shoesCnt < 0 || this.shoesCnt > this.headCnt) {
-					System.out.println("신발 갯수는 최소 0개, 최대 " + this.headCnt + "개까지 가능합니다. 다시 입력하세요.");
+					System.err.println("신발 갯수는 최소 0개, 최대 " + this.headCnt + "개까지 가능합니다. 다시 입력하세요.");
 				} else {
+					System.out.println("입력한 신발의 갯수는 "+shoesCnt+" 개 입니다.");
 					break;
 				}
 			} catch (NumberFormatException e) {
-				System.out.println("유효한 숫자를 입력하세요.");
+				System.err.println("유효한 숫자를 입력하세요.");
 			}
 		}
 
@@ -174,7 +175,7 @@ public class Lane implements Serializable {
 			return null; // 영수증을 생성하지 않음
 		}
 	}
-	
+
 	/* 🧾 영수증을 파일로 저장할지 여부 선택 */
 	private void receiptPrintOrSave(Receipt receipt) {
 		while (true) {
@@ -188,7 +189,7 @@ public class Lane implements Serializable {
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
 				if (cmd == 1) {
-					//saveReceiptToFile(receipt);	//영수증 파일로 출력하는 함수 (아직 미완성)
+					// saveReceiptToFile(receipt); //영수증 파일로 출력하는 함수 (아직 미완성)
 					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
 					break;
 				} else if (cmd == 2) {

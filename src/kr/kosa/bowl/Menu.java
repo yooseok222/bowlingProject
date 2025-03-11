@@ -22,24 +22,27 @@ public class Menu {
 
 		while (true) {
 			System.out.println("1. 볼링게임하기\n9. 관리자 메뉴화면\n0. 종료");
-			int input = Integer.parseInt(sc.nextLine());
-			switch (input) {
-			case 9:
-				Manager manager = new Manager();
-				manager.validateManager();
-				break;
-			case 1:
-				selectLane(sc);
-				break;
-			case 0:
-				ProfitFileHandler pf = new ProfitFileHandler();
-				pf.saveProfit();
-				System.out.println("안녕히 가세요!");
-				return;
-			default:
-				System.out.println("0~2만 입력하세요.");
-			}
 
+			try {
+				int input = Integer.parseInt(sc.nextLine());
+				switch (input) {
+				case 9:
+					Manager manager = new Manager();
+					manager.validateManager();
+					break;
+				case 1:
+					selectLane(sc);
+					break;
+				case 0:
+					System.out.println("안녕히 가세요!");
+					return;
+				default:
+					System.err.println("잘못된 숫자를 입력하셨습니다.");
+				}
+			} catch (NumberFormatException e) {
+				System.err.println("0 ~ 1, 9만 입력 가능합니다.");
+			} 
+			
 		}
 	}
 
@@ -55,11 +58,11 @@ public class Menu {
 					lanes[laneNum-1].useLane();
 					break;
 				} else {
-					System.out.println("1~6만 입력하실 수 있습니다.");
+					System.err.println("1~6만 입력하실 수 있습니다.");
 				}
 			} catch (NumberFormatException e) {
-				System.out.println("1~6만 입력하실 수 있습니다.");
-			}
+				System.err.println("1~6만 입력하실 수 있습니다.");
+			} 
 			
 		}
 
