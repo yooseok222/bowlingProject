@@ -40,7 +40,6 @@ public class Menu {
 				System.err.println("0 ~ 1, 9만 입력 가능합니다.");
 			} 
 			
-
 		}
 	}
 
