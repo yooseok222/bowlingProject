@@ -74,3 +74,5 @@ out/
 mvnw
 mvnw.cmd
 /.metadata/
+
+.env
