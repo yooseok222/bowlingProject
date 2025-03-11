@@ -158,7 +158,7 @@ public class Lane implements Serializable {
 	private void selectBowl() {
 		gameCnt++;
 		game.start(this.headCnt, this.shoesCnt);
-
+		
 		// 게임이 끝난 후 다시 선택하도록 루프 유지
 		System.out.println("\n🎳 게임이 끝났습니다! 추가 게임을 진행하거나 결제를 진행하세요.");
 	}
