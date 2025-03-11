@@ -100,10 +100,11 @@ public class Manager {
 				break;
 			}else {
 				if(Menu.lanes[input].isClean() == true) {
-					System.out.println("이미 청소된 레인입니다. 다시 입력해주세요.");
+					System.out.println("🚫🧹 이미 청소된 레인입니다. 다시 입력해주세요.");
 				}else {
 					Menu.lanes[input].setClean(true);
-					System.out.println("쓱싹쓱싹 - 청소가 완료되었습니다.");
+					System.out.println("\n🧹✨ 쓱싹쓱싹 - 청소가 완료되었습니다 ✨🧹");
+					System.out.println();
 				}				
 			}
 		}while(!flag);
