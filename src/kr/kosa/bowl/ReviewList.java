@@ -53,12 +53,13 @@ public class ReviewList implements Serializable {
 		if (reviewList.isEmpty()) {
 			return 0;
 		}
-		return reviewList.getLast().getReviewNum();
+		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
+		reviewList.sort(reverseCompare);
+		return reviewList.getFirst().getReviewNum();
 	}
 
 	// 리뷰 출력
 	public void showReviewList() {
-		StringBuilder sb = new StringBuilder();
 		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
 		reviewList.sort(reverseCompare);
 
@@ -85,6 +86,7 @@ public class ReviewList implements Serializable {
 					break;
 				}
 			}
+
 			if (review.isReview()) {
 				sb.append("===============================================\n");
 				sb.append("📝 리뷰 #").append(review.getReviewNum()).append(" | ⭐ 별점: ")
@@ -100,6 +102,7 @@ public class ReviewList implements Serializable {
 				}
 
 				sb.append("===============================================\n\n");
+
 				idx++;
 				System.out.println(sb);
 				sb.setLength(0);

@@ -1,10 +1,11 @@
 package kr.kosa.bowl.storage;
 
-import kr.kosa.bowl.util.AbstractFileIO;
-import kr.kosa.bowl.Snack;
-
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import kr.kosa.bowl.Snack;
+import kr.kosa.bowl.util.AbstractFileIO;
 
 public class SnackFileIO extends AbstractFileIO<Map<String, Snack>> {
 	private static final String FILE_PATH = "snack.txt";
