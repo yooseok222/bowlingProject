@@ -231,13 +231,50 @@ public class Lane implements Serializable {
 
 	// 리뷰작성 메서드
 	private void writeReview() {
-		System.out.print("별 개수 입력 : \n");
-		double starCnt = Double.parseDouble(sc.nextLine());
-		System.out.print("리뷰작성 : \n");
-		String reviewContent = sc.nextLine();
 
+		double starCnt;
+
+		while (true) {
+			System.out.print("별 개수 입력 (0~5, 0.5 간격): ");
+			String input = sc.nextLine().trim();
+
+			// 입력값이 숫자가 아닌 경우 예외 처리
+			try {
+				double value = Double.parseDouble(input);
+				// 0 ~ 5 사이의 값이며 0.5 간격인지 확인
+				if (value >= 0 && value <= 5 && value * 10 % 5 == 0) {
+					starCnt = value;
+					break; // 정상 입력이면 루프 종료
+				} else {
+					throw new NumberFormatException();
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("❌ 잘못된 입력입니다.");
+			}
+		}
+
+		String reviewContent;
+		while (true) {
+			System.out.print("리뷰작성 : \n");
+			reviewContent = sc.nextLine().trim(); // 입력값 앞뒤 공백 제거
+			
+			// 금지어 확인
+		    if (PostFilter.containsBannedWords(reviewContent)) {
+		        System.out.println("🚨 리뷰에 금지어가 포함되어 있습니다. 다시 입력해주세요.");
+		        continue; // 다시 입력받기
+		    }
+			
+			if(reviewContent.isEmpty()) {
+				System.out.println("❌ 리뷰는 공백일 수 없습니다. 내용을 입력해주세요.");
+			}
+			else if(reviewContent.length()>50) {
+				System.out.println("❌ 리뷰는 50자 이하로 작성해주세요.");
+			}
+			else {
+				break;
+			}
+		}
 		int reviewNum = reviewList.getLastReviewNum();
-
 		reviewList.addReview(new Review(reviewNum, laneNum, reviewContent, starCnt));
 
 	}
