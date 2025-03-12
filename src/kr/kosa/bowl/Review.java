@@ -33,7 +33,7 @@ public class Review implements Serializable {
 	// 관리자가 리뷰에 댓글을 달 때 사용하는 생성자 -> reviewNum과 content를 입력받는다
 	public Review(int reviewNum, int laneNum, String content) {
 		this.reviewNum = reviewNum + 1;
-		this.laneNum = laneNum;
+		this.laneNum = laneNum; // 여기에 review의 reviewNum이 저장됨
 		this.content = content;
 		this.isReview = false;
 		createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
