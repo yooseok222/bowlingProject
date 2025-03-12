@@ -1,13 +1,18 @@
 package kr.kosa.bowl;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import lombok.Data;
 
 @Data
-public class Review {
+public class Review implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 12134124352L;
 	private int reviewNum;
 	private int laneNum;
 	private String content;

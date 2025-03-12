@@ -38,11 +38,11 @@ public class PostFilter {
         return postContent; // 금지어 없으면 원래 게시글 반환
     }
     
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         String post1 = "이 게시글에는 욕설 꺼져가 포함되어 있습니다.";
         String post2 = "안녕하세요";
 
         System.out.println(checkBannedWords(post1));
         System.out.println(checkBannedWords(post2));
-    }
+    }*/
 }
