@@ -25,7 +25,7 @@ public class SnackFileHandler extends FileSaver {
     }
     
     @Override
-    protected void initializeFile() {
+	public void initializeFile() {
         Map<String, Snack> snackMap = new HashMap<>();
         snackMap.put("맥주", new Snack("맥주", 5000, 100));
         snackMap.put("땅콩", new Snack("땅콩", 3000, 100));
@@ -82,7 +82,6 @@ public class SnackFileHandler extends FileSaver {
     /**
      * 스낵 데이터 맵 읽기 편의 메서드
      */
-    @SuppressWarnings("unchecked")
     public Map<String, Snack> readSnackMap() {
         return (Map<String, Snack>) loadFromFile();
     }

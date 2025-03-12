@@ -7,14 +7,17 @@ import java.util.Map;
 import java.util.Scanner;
 
 import kr.kosa.bowl.file.ProfitFileHandler;
+import kr.kosa.bowl.file.SnackFileHandler;
 import kr.kosa.bowl.security.ConfigLoader;
 import kr.kosa.bowl.util.SHA256Util;
 
 public class Manager {
-
+	
 	Scanner sc = new Scanner(System.in);
 
-	Map<String, Snack> snackMenu = new LinkedHashMap<>(SnackFile.readSnackFile());
+	SnackFileHandler sf = new SnackFileHandler();
+
+	Map<String, Snack> snackMenu = new LinkedHashMap<>(sf.readSnackMap());
 	
 	String adminEmail = ConfigLoader.getProperty("ADMIN_EMAIL");
 	String adminPw = ConfigLoader.getProperty("ADMIN_PW");
@@ -182,7 +185,7 @@ public class Manager {
 		Snack snack = new Snack(snackName, snackPrice, snackCnt);
 		
 		snackMenu.put(snackName, snack);
-		SnackFile.makeSnackFile(snackMenu);
+		sf.saveSnackMap(snackMenu);
 		
 		System.out.println("상품이 추가되었습니다.");
 	};
@@ -239,7 +242,7 @@ public class Manager {
 				System.out.println(answer.toLowerCase());
 				if(answer.toUpperCase().equals("Y")) {
 					snackMenu.remove(snackName);
-					SnackFile.makeSnackFile(snackMenu);
+					sf.saveSnackMap(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
 				}else if(answer.toUpperCase().equals("N")){
@@ -346,7 +349,7 @@ public class Manager {
 				if(snackNameChanged != null) {
 					snackNameChanged.setSnackName(newName);			
 					snackMenu.put(newName, snackNameChanged);
-					SnackFile.makeSnackFile(snackMenu);
+					sf.saveSnackMap(snackMenu);
 				}
 				System.out.println("상품 이름 수정이 완료되었습니다.");	
 			}	
@@ -366,7 +369,7 @@ public class Manager {
 			if(snackPriceChanged != null) {
 				snackPriceChanged.setSnackPrice(newPrice);
 				snackMenu.put(snackName, snackPriceChanged);
-				SnackFile.makeSnackFile();
+				sf.initializeFile();
 			}
 			System.out.println("상품 가격 수정이 완료되었습니다.");
 		} catch (NumberFormatException e) {
