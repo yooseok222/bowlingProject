@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 import kr.kosa.bowl.factory.ReceiptFactory;
+import kr.kosa.bowl.file.ReceiptFileHandler;
 import lombok.Data;
 
 @Data
@@ -188,9 +189,10 @@ public class Lane implements Serializable {
 
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
-				if (cmd == 1) {
-					// saveReceiptToFile(receipt); //영수증 파일로 출력하는 함수 (아직 미완성)
-					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
+				if (cmd == 1) { 
+					ReceiptFileHandler rf = new ReceiptFileHandler();
+					rf.saveReceiptToFile(receipt); //영수증 파일로 출력하는 함수 (아직 미완성)
+//					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
 					break;
 				} else if (cmd == 2) {
 					System.out.println("\n🚪 영수증을 저장하지 않고 종료합니다.");
