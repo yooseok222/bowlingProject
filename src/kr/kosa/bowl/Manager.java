@@ -1,24 +1,27 @@
 package kr.kosa.bowl;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import kr.kosa.bowl.file.SnackFileHandler;
 import kr.kosa.bowl.security.ConfigLoader;
+import kr.kosa.bowl.storage.SnackFileIO;
+import kr.kosa.bowl.util.AbstractFileIO;
 import kr.kosa.bowl.util.SHA256Util;
 
 public class Manager {
 	
 	Scanner sc = new Scanner(System.in);
-
-	SnackFileHandler sf = new SnackFileHandler();
-
-	Map<String, Snack> snackMenu = new LinkedHashMap<>(sf.readSnackMap());
+ 
+	transient AbstractFileIO<Map<String, Snack>> fileIO = new SnackFileIO();
+	Map<String, Snack> snackMenu = fileIO.loadFile(); 
 	
+
 	String adminEmail = ConfigLoader.getProperty("ADMIN_EMAIL");
 	String adminPw = ConfigLoader.getProperty("ADMIN_PW");
 	
@@ -77,7 +80,7 @@ public class Manager {
 		
 		while(true) {
 			System.out.println("관리자 메뉴입니다.");
-			System.out.println("1. 레인 청소 | 2. 상품 관리 | 3. 전체 매출 조회 | 4. 리뷰관리 | 0. 초기 화면으로 돌아가기");
+			System.out.println("1. 레인 청소 | 2. 상품 관리 | 3. 전체 매출 조회 | 4. 리뷰관리 | 5. 금지어 관리 | 0. 초기 화면으로 돌아가기");
 	
 			String inputMenu = sc.nextLine();
 			
@@ -89,6 +92,8 @@ public class Manager {
 				case "3" : getProfit();
 					break;
 				case "4" : getReviewList();
+					break;
+				case "5" : manageBannedWords();
 					break;
 				case "0" : 
 					return;
@@ -190,7 +195,8 @@ public class Manager {
 		Snack snack = new Snack(snackName, snackPrice, snackCnt);
 		
 		snackMenu.put(snackName, snack);
-		sf.saveSnackMap(snackMenu);
+		
+		fileIO.saveFile(snackMenu);
 		
 		System.out.println("상품이 추가되었습니다.");
 	};
@@ -230,7 +236,7 @@ public class Manager {
 	}
 
 	/** 상품 삭제 */
-	private void delSnack() {
+	private void delSnack() {  
 		
 		System.out.println("삭제하실 상품 이름을 입력하세요 : ");
 		String snackName = sc.nextLine();
@@ -247,7 +253,8 @@ public class Manager {
 				System.out.println(answer.toLowerCase());
 				if(answer.toUpperCase().equals("Y")) {
 					snackMenu.remove(snackName);
-					sf.saveSnackMap(snackMenu);
+//					sf.saveSnackMap(snackMenu);
+					fileIO.saveFile(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
 				}else if(answer.toUpperCase().equals("N")){ 
@@ -344,9 +351,9 @@ public class Manager {
 		
 		do {
 			System.out.println("수정하실 상품의 새 이름을 입력해주세요");
-			
+			 
 			newName = sc.nextLine();
-			
+			 
 			if(newName.isBlank()) {
 				System.err.println("상품명이 입력되지 않았습니다.");
 			}else {
@@ -354,7 +361,8 @@ public class Manager {
 				if(snackNameChanged != null) {
 					snackNameChanged.setSnackName(newName);			
 					snackMenu.put(newName, snackNameChanged);
-					sf.saveSnackMap(snackMenu);
+					fileIO.saveFile(snackMenu);
+//					sf.saveSnackMap(snackMenu);  
 				}
 				System.out.println("상품 이름 수정이 완료되었습니다.");	
 			}	
@@ -374,15 +382,16 @@ public class Manager {
 			if(snackPriceChanged != null) {
 				snackPriceChanged.setSnackPrice(newPrice);
 				snackMenu.put(snackName, snackPriceChanged);
-				sf.initializeFile();
+				fileIO.saveFile(snackMenu);
+//				sf.initializeFile();
 			}
 			System.out.println("상품 가격 수정이 완료되었습니다.");
 		} catch (NumberFormatException e) {
 			System.err.println("가격이 입력되지 않았습니다.");
 		}
 
-	}
-	
+	} 
+	 
 	/** 매출 조회 */
 	private void getProfit() {
 		System.out.println("매출 조회 페이지");
@@ -460,7 +469,7 @@ public class Manager {
 	private void getTopSellingMenu() {
 	
 		List<Map.Entry<String, Integer>> top3Menus = Profit.getInstance().getTop3Menus();
-	    Map<String, Snack> snackMap = SnackFile.readSnackFile(); // 스낵 정보를 담고 있는 맵 가져오기
+	    Map<String, Snack> snackMap = fileIO.loadFile();  // 스낵 정보를 담고 있는 맵 가져오기
 	    
 	    System.out.println("\n================ 매출액 기준 베스트 간식 TOP 3 ================");
 	    
@@ -486,6 +495,8 @@ public class Manager {
 	private void getReviewList() {
 		
 		//리뷰 목록 불러오는 메서드
+		ReviewList.getInstance().showReviewList();
+		
 		
 		//리뷰 메뉴
 		String inputMonth = "";
@@ -493,16 +504,12 @@ public class Manager {
 		while(true) {
 			
 			System.out.println("원하시는 메뉴를 선택해주세요");
-			System.out.println("1. 리뷰 댓글 보기 | 2. 리뷰 정렬하기 | 3. 레인별 리뷰 목록 불러오기 | 0. 관리자 메뉴로 돌아가기");
+			System.out.println("1. 리뷰 댓글 달기 | 0. 관리자 메뉴로 돌아가기");
 			
 			String inputMenu = sc.nextLine();
 			
 			switch(inputMenu) {
 				case "1" : addCommentToReview();
-					break;
-				case "2" : sortReviewList();
-					break;
-				case "3" : getReviewListByLaneNum();
 					break;
 				case "0" : 
 					return;
@@ -512,50 +519,75 @@ public class Manager {
 		}
 	}
 
+
+
 	/** 리뷰에 댓글 달기 */
 	private void addCommentToReview() {
-		//리뷰 목록 불러오는 메서드
 		
 		System.out.println("댓글을 달고 싶으신 글의 번호를 입력해주세요.");
 		
-		int inputReviewNum = Integer.parseInt(sc.nextLine());
+		int inputLaneNum = Integer.parseInt(sc.nextLine());
 	
-		//리뷰 글 한 개만 가져오기
-		getReviewByReviewNum(inputReviewNum);
-		
 		//댓글달기
 		System.out.println("댓글 내용을 입력해주세요.");
-		String inputReply = sc.nextLine();
+		String inputReply = sc.nextLine(); 
 		
-		try {
+		int reviewNum = ReviewList.getInstance().getLastReviewNum();
+		
+		ReviewList.getInstance().addReview(new Review(reviewNum, inputLaneNum, inputReply));
+		ReviewList.getInstance().saveToFile();
+		
+		try { 
 			System.err.println("댓글이 등록되었습니다.");
 		}catch(Exception e){
-			System.err.println("댓글 등록 중 오류가 발생했습니다.");
-		}
+			System.err.println("댓글 등록 중 오류가 발생했습니다."); 
+		} 
 	} 
 	
-	/** 리뷰 번호로 리뷰 검색 */
-	private void getReviewByReviewNum(int inputReviewNum) {
+	/** 금지어 관리 */
+	private void manageBannedWords() {
+
+		while(true) {
 		
+			System.out.println("금지어 관리 페이지입니다.");
+			System.out.println("1. 금지어 목록 보기 | 2. 금지어 추가 | 3. 금지어 삭제 | 0. 관리자 메뉴로 돌아가기");
+			
+			String inputMenu = sc.nextLine();
+			
+			switch(inputMenu) {
+				case "1" : PostFilter.printBannedWords();
+					break;
+				case "2" : addBanndWord();
+					break;
+				case "3" : delBannedWord();
+					break;
+				case "0" : 
+					return;
+				default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+					break;
+			}
+		}	
+	}
+
+	/** 금지어 추가 */ 
+	private void addBanndWord() {
+		
+		System.out.println("추가하실 금지어를 입력해주세요.");
+		String inputMenu = sc.nextLine();
+		
+		PostFilter.addBannedWordToFile(inputMenu);
 		
 	}
 
-	private void sortReviewList() {
-		System.out.println("원하시는 정렬 방법을 선택해주세요");
-		System.out.println("1. 오래된 날짜순 | 2. 최신순 | 3. 별점 높은 순 | 4. 별점 낮은 순");
-		
-	}
 
-	private void getReviewListByLaneNum() {
-		System.out.println("리뷰목록을 보고 싶으신 레인의 번호를 입력해 주세요");
-		int inputLaneNum = Integer.parseInt(sc.nextLine());
+	/** 금지어 삭제 */
+	private void delBannedWord() {
+		System.out.println("삭제하실 금지어를 입력해주세요.");
+		String inputMenu = sc.nextLine();
 		
-	
+		PostFilter.delBannedWordToFile(inputMenu);
 	}
 
 
 
-	
-	
-	
 }

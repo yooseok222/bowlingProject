@@ -2,7 +2,13 @@ package kr.kosa.bowl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 import kr.kosa.bowl.storage.ReviewListFileIO;
 import kr.kosa.bowl.util.AbstractFileIO;
@@ -47,20 +53,61 @@ public class ReviewList implements Serializable {
 		if (reviewList.isEmpty()) {
 			return 0;
 		}
-		return reviewList.getLast().getReviewNum();
+		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
+		reviewList.sort(reverseCompare);
+		return reviewList.getFirst().getReviewNum();
 	}
 
 	// 리뷰 출력
 	public void showReviewList() {
-		StringBuilder sb = new StringBuilder();
-		for (Review review : reviewList) {
+		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
+		reviewList.sort(reverseCompare);
 
-			sb.append("\n").append(review.getContent()).append("\n");
+		printReviewList();
+	}
+
+	public void showSortByStarReviewList() {
+		Comparator<Review> starCompare = Comparator.comparingDouble(Review::getStarCnt).reversed();
+		reviewList.sort(starCompare);
+
+		printReviewList();
+	}
+
+	public void printReviewList() {
+		StringBuilder sb = new StringBuilder();
+		Scanner sc = new Scanner(System.in);
+
+		int idx = 1;
+		for (Review review : reviewList) {
+			if (idx % 3 == 0) {
+				System.out.println("계속 보시겠습니까? 아니라면 n을 입력해주세요.");
+				String in = sc.nextLine().toLowerCase();
+				if (in.equals("n")) {
+					break;
+				}
+			}
+
 			if (review.isReview()) {
-				sb.append("별점 : ").append(generateCircleRating(review.getStarCnt())).append("\n\n");
+				sb.append("===============================================\n");
+				sb.append("📝 리뷰 #").append(review.getReviewNum()).append(" | ⭐ 별점: ")
+						.append(generateCircleRating(review.getStarCnt())).append("| ").append(review.getCreatedAt())
+						.append("\n");
+				sb.append("-----------------------------------------------\n");
+				sb.append(review.getContent()).append("\n");
+
+				for (Review reply : reviewList) {
+					if (!reply.isReview() && reply.getLaneNum() == review.getReviewNum()) {
+						sb.append("  ↳ 💬 관리자 답변: ").append(reply.getContent()).append("\n");
+					}
+				}
+
+				sb.append("===============================================\n\n");
+
+				idx++;
+				System.out.println(sb);
+				sb.setLength(0);
 			}
 		}
-		System.out.println(sb);
 	}
 
 	// 별 찍는 함수

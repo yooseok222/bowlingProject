@@ -11,6 +11,8 @@ import java.util.Scanner;
 import kr.kosa.bowl.factory.OrderFactory;
 import kr.kosa.bowl.factory.ReceiptFactory;
 import kr.kosa.bowl.file.ReceiptFileHandler;
+import kr.kosa.bowl.util.AbstractFileIO;
+import kr.kosa.bowl.storage.ReceiptFileIO;
 import lombok.Data;
 
 @Data
@@ -76,7 +78,6 @@ public class Lane implements Serializable {
 		// 리뷰작성
 		reviewOrNot();
 
-		reviewList.showReviewList();
 		reviewList.saveToFile();
 		profit.saveToFile();
 
@@ -125,19 +126,19 @@ public class Lane implements Serializable {
 		while (true) {
 			try {
 				System.out.println("\n✨🌟====== 선택 메뉴 ======🌟✨");
-				System.out.println("🍿 1. 간식 구매");
-				System.out.println("🎮 2. 게임 시작");
+				System.out.println("🎮 1. 게임 시작");
+				System.out.println("🍿 2. 간식 구매");
 				System.out.println("🧾 3. 결제 및 종료");
 				System.out.println("================================");
 				System.out.print("🔹 원하는 옵션을 선택하세요 (1, 2, 3) ▶ ");
 
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
-				if (cmd == 1) {
+				if (cmd == 2) {
 					// 간식
 					selectSnack();
 					return false; // 게임 종료 아님
-				} else if (cmd == 2) {
+				} else if (cmd == 1) {
 					// 게임시작
 					selectBowl();
 					return false; // 게임 종료 아님
@@ -199,8 +200,8 @@ public class Lane implements Serializable {
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
 				if (cmd == 1) {
-					ReceiptFileHandler rf = new ReceiptFileHandler();
-					rf.saveReceiptToFile(receipt); // 영수증 파일로 출력하는 함수 (아직 미완성)
+					AbstractFileIO<Receipt> fileIO = new ReceiptFileIO();
+					fileIO.saveFile(receipt);
 //					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
 					break;
 				} else if (cmd == 2) {
