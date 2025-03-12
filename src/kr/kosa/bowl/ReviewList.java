@@ -32,7 +32,7 @@ public class ReviewList implements Serializable {
 		return instance;
 	}
 
-	// 리뷰 출력
+	// 리뷰 출력 (createAt)
 	public void showReviewList() {
 		StringBuilder sb = new StringBuilder();
 		for (Review review : reviewList) {
@@ -44,6 +44,8 @@ public class ReviewList implements Serializable {
 		}
 		System.out.println(sb);
 	}
+	
+	
 
 	// 별 찍는 함수
 	public static String generateCircleRating(double rating) {
