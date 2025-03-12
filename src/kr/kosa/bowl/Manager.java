@@ -544,7 +544,51 @@ public class Manager {
 		} 
 	} 
 	
-	
+	/** 금지어 관리 */
+	private void manageBannedWords() {
+
+		while(true) {
+		
+			System.out.println("금지어 관리 페이지입니다.");
+			System.out.println("1. 금지어 목록 보기 | 2. 금지어 추가 | 3. 금지어 삭제 | 0. 관리자 메뉴로 돌아가기");
+			
+			String inputMenu = sc.nextLine();
+			
+			switch(inputMenu) {
+				case "1" : getBannedWordsList();
+					break;
+				case "2" : addSnack();
+					break;
+				case "3" : updateSnack();
+					break;
+				case "4" : delSnack();
+					break;
+				case "5" : getSnackByName();
+					break;
+				case "0" : 
+					return;
+				default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+					break;
+			}
+		}	
+	}
+
+
+	/** 금지어 목록 보기 */
+	private void getBannedWordsList() {
+		 try (FileInputStream fis = new FileInputStream("banned_words.txt");
+         	BufferedInputStream bis = new BufferedInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(bis)) {
+            
+           
+            ois.readObject(); 
+            
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("[ERROR] 영수증 파일 읽기 중 오류 발생: " + e.getMessage());
+            
+        }
+	}
+
 	
 
 }
