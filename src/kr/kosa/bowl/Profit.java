@@ -2,6 +2,7 @@ package kr.kosa.bowl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,4 +85,134 @@ public class Profit implements Serializable {
 
         System.out.println(sb.toString());
     }
+    
+    /** 전체 기간 게임비 매출 조회 */
+    public int getTotalGameProfit() {
+        return receiptList.stream()
+                .mapToInt(receipt -> receipt.getGameFee() * receipt.getLane().getHeadCnt() * receipt.getLane().getGameCnt())
+                .sum();
+    }
+
+    /** 전체 기간 신발 대여비 매출 조회 */
+    public int getTotalShoesProfit() {
+        return receiptList.stream()
+                .mapToInt(receipt -> receipt.getShoesFee() * receipt.getLane().getShoesCnt())
+                .sum();
+    }
+
+    /** 전체 기간 간식 매출 조회 */
+    public int getTotalSnackProfit() {
+        return receiptList.stream()
+                .mapToInt(receipt -> {
+                    int snackTotal = 0;
+                    Map<String, Integer> mergedOrders = receipt.getMergedOrders();
+                    for (Map.Entry<String, Integer> entry : mergedOrders.entrySet()) {
+                        String snackName = entry.getKey();
+                        int quantity = entry.getValue();
+                        int price = receipt.getSnackMap().get(snackName).getSnackPrice();
+                        snackTotal += price * quantity;
+                    }
+                    return snackTotal;
+                })
+                .sum();
+    }
+    
+    /** 전체 기간 매출 상세 조회 (각 카테고리별 금액과 총액) */
+    public Map<String, Integer> getTotalProfitDetails() {
+        Map<String, Integer> profitDetails = new HashMap<>();
+        
+        int gameProfit = getTotalGameProfit();
+        int shoesProfit = getTotalShoesProfit();
+        int snackProfit = getTotalSnackProfit();
+        int totalProfit = gameProfit + shoesProfit + snackProfit;
+        
+        profitDetails.put("게임비", gameProfit);
+        profitDetails.put("신발대여비", shoesProfit);
+        profitDetails.put("간식매출", snackProfit);
+        profitDetails.put("총매출", totalProfit);
+        
+        return profitDetails;
+    }
+    
+    
+    /** 월별 전체 매출 조회 */
+    public int getMonthlyProfit(String inputMonth) {
+        int month = Integer.parseInt(inputMonth);
+        return receiptList.stream()
+                .filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+                .mapToInt(Receipt::getTotalFee)
+                .sum();
+    }
+    
+    public Map<String, Integer> getMonthlyProfitDetails(String inputMonth) {
+        Map<String, Integer> profitDetails = new HashMap<>();
+        
+        int gameProfit = getMonthlyGameProfit(inputMonth);
+        int shoesProfit = getMonthlyShoesProfit(inputMonth);
+        int snackProfit = getMonthlySnackProfit(inputMonth);
+        int totalProfit = gameProfit + shoesProfit + snackProfit;
+        
+        profitDetails.put("게임비", gameProfit);
+        profitDetails.put("신발대여비", shoesProfit);
+        profitDetails.put("간식매출", snackProfit);
+        profitDetails.put("총매출", totalProfit);
+        
+        return profitDetails;
+    }
+
+    /** 월별 게임비 매출 조회 */
+    public int getMonthlyGameProfit(String inputMonth) {
+        int month = Integer.parseInt(inputMonth);
+        return receiptList.stream()
+                .filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+                .mapToInt(receipt -> receipt.getGameFee() * receipt.getLane().getHeadCnt() * receipt.getLane().getGameCnt())
+                .sum();
+    }
+
+    /** 월별 신발 대여비 매출 조회 */
+    public int getMonthlyShoesProfit(String inputMonth) {
+        int month = Integer.parseInt(inputMonth);
+        return receiptList.stream()
+                .filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+                .mapToInt(receipt -> receipt.getShoesFee() * receipt.getLane().getShoesCnt())
+                .sum();
+    }
+
+    /** 월별 간식 매출 조회 */
+    public int getMonthlySnackProfit(String inputMonth) {
+        int month = Integer.parseInt(inputMonth);
+        return receiptList.stream()
+                .filter(receipt -> getMonth(receipt.getLane().getSelectedAt()) == month)
+                .mapToInt(receipt -> {
+                    int snackTotal = 0;
+                    Map<String, Integer> mergedOrders = receipt.getMergedOrders();
+                    for (Map.Entry<String, Integer> entry : mergedOrders.entrySet()) {
+                        String snackName = entry.getKey();
+                        int quantity = entry.getValue();
+                        int price = receipt.getSnackMap().get(snackName).getSnackPrice();
+                        snackTotal += price * quantity;
+                    }
+                    return snackTotal;
+                })
+                .sum();
+    }
+
+ 	private int getMonth(String date) { 
+ 		return Integer.parseInt(date.split("\\.")[1]);
+ 	} 
+
+ 	// 가장 많이 팔린 메뉴 TOP 3
+ 	public List<Map.Entry<String, Integer>> getTop3Menus() {
+ 		Map<String, Integer> totalOrders = new HashMap<>();
+
+ 		for (Receipt receipt : receiptList) {
+ 			for (Map.Entry<String, Integer> entry : receipt.getMergedOrders().entrySet()) {
+ 				totalOrders.put(entry.getKey(), totalOrders.getOrDefault(entry.getKey(), 0) + entry.getValue());
+ 			}
+ 		} 
+
+ 		return totalOrders.entrySet().stream().sorted((a, b) -> b.getValue() - a.getValue()) // 내림차순 정렬
+ 				.limit(3) // 상위 3개만 선택
+ 				.toList();
+ 	}
 }
