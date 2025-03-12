@@ -125,19 +125,19 @@ public class Lane implements Serializable {
 		while (true) {
 			try {
 				System.out.println("\n✨🌟====== 선택 메뉴 ======🌟✨");
-				System.out.println("🍿 1. 간식 구매");
-				System.out.println("🎮 2. 게임 시작");
+				System.out.println("🎮 1. 게임 시작");
+				System.out.println("🍿 2. 간식 구매");
 				System.out.println("🧾 3. 결제 및 종료");
 				System.out.println("================================");
 				System.out.print("🔹 원하는 옵션을 선택하세요 (1, 2, 3) ▶ ");
 
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
-				if (cmd == 1) {
+				if (cmd == 2) {
 					// 간식
 					selectSnack();
 					return false; // 게임 종료 아님
-				} else if (cmd == 2) {
+				} else if (cmd == 1) {
 					// 게임시작
 					selectBowl();
 					return false; // 게임 종료 아님

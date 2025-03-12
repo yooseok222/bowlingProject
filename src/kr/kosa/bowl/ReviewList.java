@@ -2,7 +2,12 @@ package kr.kosa.bowl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kr.kosa.bowl.storage.ReviewListFileIO;
 import kr.kosa.bowl.util.AbstractFileIO;
@@ -42,7 +47,6 @@ public class ReviewList implements Serializable {
 		fileIO.saveFile(reviewList);
 	}
 
-
 	// 저장된 리뷰들의 고유 번호 중 최대값 받아오기
 	public int getLastReviewNum() {
 		if (reviewList.isEmpty()) {
@@ -54,17 +58,44 @@ public class ReviewList implements Serializable {
 	// 리뷰 출력
 	public void showReviewList() {
 		StringBuilder sb = new StringBuilder();
-		for (Review review : reviewList) {
+		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
+		reviewList.sort(reverseCompare);
+		
+		printReviewList();
+	}
 
-			sb.append("\n").append(review.getContent()).append("\n");
-			if (review.isReview()) {
-				sb.append("별점 : ").append(generateCircleRating(review.getStarCnt())).append("\n\n");
-			}
-		}
-		System.out.println(sb);
+	public void showSortByStarReviewList() {
+		Comparator<Review> starCompare = Comparator.comparingDouble(Review::getStarCnt).reversed();
+		reviewList.sort(starCompare);
+		
+		printReviewList();
 	}
 	
-	// 리뷰 출력(별점기준)
+	public void printReviewList() {
+	    StringBuilder sb = new StringBuilder();
+	    
+	    for (Review review : reviewList) {
+	        if (review.isReview()) {
+	            sb.append("===============================================\n");
+	            sb.append("📝 리뷰 #").append(review.getReviewNum())
+	              .append(" | ⭐ 별점: ").append(generateCircleRating(review.getStarCnt()))
+	              .append("| ").append(review.getCreatedAt()).append("\n");
+	            sb.append("-----------------------------------------------\n");
+	            sb.append(review.getContent()).append("\n");
+
+	            for (Review reply : reviewList) {
+	                if (!reply.isReview() && reply.getLaneNum() == review.getReviewNum()) {
+	                    sb.append("  ↳ 💬 관리자 답변: ").append(reply.getContent()).append("\n");
+	                }
+	            }
+
+	            sb.append("===============================================\n\n");
+	        }
+	    }
+
+	    System.out.println(sb);
+	}
+
 
 	// 별 찍는 함수
 	public static String generateCircleRating(double rating) {
