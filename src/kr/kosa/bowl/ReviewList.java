@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import kr.kosa.bowl.storage.ReviewListFileIO;
 import kr.kosa.bowl.util.AbstractFileIO;
@@ -74,8 +75,18 @@ public class ReviewList implements Serializable {
 
 	public void printReviewList() {
 		StringBuilder sb = new StringBuilder();
+		Scanner sc = new Scanner(System.in);
 
+		int idx = 1;
 		for (Review review : reviewList) {
+			if (idx % 3 == 0) {
+				System.out.println("계속 보시겠습니까? 아니라면 n을 입력해주세요.");
+				String in = sc.nextLine().toLowerCase();
+				if (in.equals("n")) {
+					break;
+				}
+			}
+
 			if (review.isReview()) {
 				sb.append("===============================================\n");
 				sb.append("📝 리뷰 #").append(review.getReviewNum()).append(" | ⭐ 별점: ")
@@ -91,10 +102,12 @@ public class ReviewList implements Serializable {
 				}
 
 				sb.append("===============================================\n\n");
+
+				idx++;
+				System.out.println(sb);
+				sb.setLength(0);
 			}
 		}
-
-		System.out.println(sb);
 	}
 
 	// 별 찍는 함수
