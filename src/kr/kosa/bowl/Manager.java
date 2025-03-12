@@ -555,15 +555,11 @@ public class Manager {
 			String inputMenu = sc.nextLine();
 			
 			switch(inputMenu) {
-				case "1" : getBannedWordsList();
+				case "1" : PostFilter.printBannedWords();
 					break;
-				case "2" : addSnack();
+				case "2" : addBanndWord();
 					break;
-				case "3" : updateSnack();
-					break;
-				case "4" : delSnack();
-					break;
-				case "5" : getSnackByName();
+				case "3" : delBannedWord();
 					break;
 				case "0" : 
 					return;
@@ -573,22 +569,25 @@ public class Manager {
 		}	
 	}
 
-
-	/** 금지어 목록 보기 */
-	private void getBannedWordsList() {
-		 try (FileInputStream fis = new FileInputStream("banned_words.txt");
-         	BufferedInputStream bis = new BufferedInputStream(fis);
-            ObjectInputStream ois = new ObjectInputStream(bis)) {
-            
-           
-            ois.readObject(); 
-            
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("[ERROR] 영수증 파일 읽기 중 오류 발생: " + e.getMessage());
-            
-        }
+	/** 금지어 추가 */ 
+	private void addBanndWord() {
+		
+		System.out.println("추가하실 금지어를 입력해주세요.");
+		String inputMenu = sc.nextLine();
+		
+		PostFilter.addBannedWordToFile(inputMenu);
+		
 	}
 
-	
+
+	/** 금지어 삭제 */
+	private void delBannedWord() {
+		System.out.println("삭제하실 금지어를 입력해주세요.");
+		String inputMenu = sc.nextLine();
+		
+		PostFilter.delBannedWordToFile(inputMenu);
+	}
+
+
 
 }
