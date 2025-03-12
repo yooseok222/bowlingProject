@@ -76,7 +76,6 @@ public class Lane implements Serializable {
 		// 리뷰작성
 		reviewOrNot();
 
-		reviewList.showReviewList();
 		reviewList.saveToFile();
 		profit.saveToFile();
 

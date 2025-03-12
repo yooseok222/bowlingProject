@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import kr.kosa.bowl.storage.ReviewListFileIO;
 import kr.kosa.bowl.util.AbstractFileIO;
@@ -60,42 +61,51 @@ public class ReviewList implements Serializable {
 		StringBuilder sb = new StringBuilder();
 		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
 		reviewList.sort(reverseCompare);
-		
+
 		printReviewList();
 	}
 
 	public void showSortByStarReviewList() {
 		Comparator<Review> starCompare = Comparator.comparingDouble(Review::getStarCnt).reversed();
 		reviewList.sort(starCompare);
-		
+
 		printReviewList();
 	}
-	
+
 	public void printReviewList() {
-	    StringBuilder sb = new StringBuilder();
-	    
-	    for (Review review : reviewList) {
-	        if (review.isReview()) {
-	            sb.append("===============================================\n");
-	            sb.append("📝 리뷰 #").append(review.getReviewNum())
-	              .append(" | ⭐ 별점: ").append(generateCircleRating(review.getStarCnt()))
-	              .append("| ").append(review.getCreatedAt()).append("\n");
-	            sb.append("-----------------------------------------------\n");
-	            sb.append(review.getContent()).append("\n");
+		StringBuilder sb = new StringBuilder();
+		Scanner sc = new Scanner(System.in);
 
-	            for (Review reply : reviewList) {
-	                if (!reply.isReview() && reply.getLaneNum() == review.getReviewNum()) {
-	                    sb.append("  ↳ 💬 관리자 답변: ").append(reply.getContent()).append("\n");
-	                }
-	            }
+		int idx = 1;
+		for (Review review : reviewList) {
+			if (idx % 3 == 0) {
+				System.out.println("계속 보시겠습니까? 아니라면 n을 입력해주세요.");
+				String in = sc.nextLine().toLowerCase();
+				if (in.equals("n")) {
+					break;
+				}
+			}
+			if (review.isReview()) {
+				sb.append("===============================================\n");
+				sb.append("📝 리뷰 #").append(review.getReviewNum()).append(" | ⭐ 별점: ")
+						.append(generateCircleRating(review.getStarCnt())).append("| ").append(review.getCreatedAt())
+						.append("\n");
+				sb.append("-----------------------------------------------\n");
+				sb.append(review.getContent()).append("\n");
 
-	            sb.append("===============================================\n\n");
-	        }
-	    }
+				for (Review reply : reviewList) {
+					if (!reply.isReview() && reply.getLaneNum() == review.getReviewNum()) {
+						sb.append("  ↳ 💬 관리자 답변: ").append(reply.getContent()).append("\n");
+					}
+				}
 
-	    System.out.println(sb);
+				sb.append("===============================================\n\n");
+				idx++;
+				System.out.println(sb);
+				sb.setLength(0);
+			}
+		}
 	}
-
 
 	// 별 찍는 함수
 	public static String generateCircleRating(double rating) {
