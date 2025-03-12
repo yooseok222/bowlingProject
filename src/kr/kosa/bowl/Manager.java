@@ -3,6 +3,7 @@ package kr.kosa.bowl;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -245,7 +246,7 @@ public class Manager {
 					sf.saveSnackMap(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
-				}else if(answer.toUpperCase().equals("N")){
+				}else if(answer.toUpperCase().equals("N")){ 
 					System.out.println("상품 삭제를 취소하셨습니다.");
 					escape = true;
 				}else {
@@ -400,10 +401,6 @@ public class Manager {
 			default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
 				break;
 		}
-		
-//		Profit.getInstance().showReceiptList();
-		
-		
 	}
 
 
@@ -413,37 +410,72 @@ public class Manager {
 
 	    Profit profit = Profit.getInstance();
 	    profit.showReceiptList(); // 🔹 영수증 형식으로 출력
+	    
+	    Map<String, Integer> profitDetails = Profit.getInstance().getTotalProfitDetails();
+	    
+	    System.out.println("\n================ 전체 기간 매출 내역 =================");
+	    System.out.println("게임비 매출: " + String.format("%,d", profitDetails.get("게임비")) + "원");
+	    System.out.println("신발대여비 매출: " + String.format("%,d", profitDetails.get("신발대여비")) + "원");
+	    System.out.println("간식 매출: " + String.format("%,d", profitDetails.get("간식매출")) + "원");
+	    System.out.println("-----------------------------------------------");
+	    System.out.println("총 매출액: " + String.format("%,d", profitDetails.get("총매출")) + "원");
+	    System.out.println("===================================================");
 	}
 
 	
 	/** 월별 매출 조회 */
 	private void getProfitByMonth() {
-//	
-//		
-//		String inputMonth = "";
-//		
-//		
-//		do {
-//			System.out.println("조회를 원하시는 월을 입력해주세요. 예) 3월 매출 조회 시 -> 3");
-//			inputMonth = sc.nextLine();
-//			
-//			if(inputMonth.isBlank()) {
-//				System.err.println("상품명이 입력되지 않았습니다.");
-//			}else {
-//				System.out.println(inputMonth + "월의 총 매출액은 : "
-//						+ Profit.getInstance().getMonthlyProfit(inputMonth) + "원입니다.");
-//			}	
-//		
-//		}while(inputMonth.isBlank());
-//		
-//		
-//	
+		
+		String inputMonth = "";
+
+		do {
+			System.out.println("조회를 원하시는 월을 입력해주세요. 예) 3월 매출 조회 시 -> 3");
+			inputMonth = sc.nextLine();
+			
+			if(inputMonth.isBlank()) {
+				System.err.println("상품명이 입력되지 않았습니다.");
+			}else {
+				 Map<String, Integer> profitDetails = Profit.getInstance().getMonthlyProfitDetails(inputMonth);
+		            
+		            System.out.println("\n================ " + inputMonth + "월 매출 내역 =================");
+		            System.out.println("게임비 매출: " + String.format("%,d", profitDetails.get("게임비")) + "원");
+		            System.out.println("신발대여비 매출: " + String.format("%,d", profitDetails.get("신발대여비")) + "원");
+		            System.out.println("간식 매출: " + String.format("%,d", profitDetails.get("간식매출")) + "원");
+		            System.out.println("-----------------------------------------------");
+		            System.out.println(inputMonth + "월 총 매출액: " + 
+		                String.format("%,d", profitDetails.get("총매출")) + "원");
+		            System.out.println("===================================================");
+				
+			}	
+		
+		}while(inputMonth.isBlank());
+	
 	}
 
 
 	private void getTopSellingMenu() {
-		// TODO Auto-generated method stub
-		
+	
+		List<Map.Entry<String, Integer>> top3Menus = Profit.getInstance().getTop3Menus();
+	    Map<String, Snack> snackMap = SnackFile.readSnackFile(); // 스낵 정보를 담고 있는 맵 가져오기
+	    
+	    System.out.println("\n================ 매출액 기준 베스트 간식 TOP 3 ================");
+	    
+	    if (top3Menus.isEmpty()) {
+	        System.out.println("아직 판매된 간식이 없습니다.");
+	    } else {
+	        for (int i = 0; i < top3Menus.size(); i++) {
+	            Map.Entry<String, Integer> entry = top3Menus.get(i);
+	            String menuName = entry.getKey();
+	            int quantity = entry.getValue();
+	            int price = snackMap.get(menuName).getSnackPrice(); // 해당 간식의 가격 가져오기
+	            int totalSales = price * quantity; // 총 매출액 계산
+	            
+	            System.out.printf("%d위: %-15s - 총 %3d개 판매 - 매출액: %,10d원\n", 
+	                i + 1, menuName, quantity, totalSales);
+	        }
+	    }
+	    
+	    System.out.println("==========================================================");
 	}
 
 }
