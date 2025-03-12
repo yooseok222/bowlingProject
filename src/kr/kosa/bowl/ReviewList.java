@@ -42,6 +42,14 @@ public class ReviewList implements Serializable {
 		fileIO.saveFile(reviewList);
 	}
 
+	// 저장된 리뷰들의 고유 번호 중 최대값 받아오기
+	public int getLastReviewNum() {
+		if (reviewList.isEmpty()) {
+			return 0;
+		}
+		return reviewList.getLast().getReviewNum();
+	}
+
 	// 리뷰 출력
 	public void showReviewList() {
 		StringBuilder sb = new StringBuilder();
