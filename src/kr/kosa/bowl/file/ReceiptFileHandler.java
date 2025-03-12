@@ -20,7 +20,6 @@ import kr.kosa.bowl.Receipt;
  */
 public class ReceiptFileHandler extends FileSaver{
     private static final String RECEIPT_FILE_PATH = "receipt.txt";
-    private static final String RECEIPT_LOG_FILE_PATH = "receipt_log.txt";
     
     public ReceiptFileHandler() {
         super(RECEIPT_FILE_PATH);
@@ -74,61 +73,15 @@ public class ReceiptFileHandler extends FileSaver{
         return super.validateData(data);
     }
     
-//    /**
-//     * 영수증 데이터 저장 편의 메서드
-//     */
-//    public void saveReceipt(Receipt receipt) {
-//        // Receipt 객체를 ReceiptData로 변환
-//        ReceiptData receiptData = convertToReceiptData(receipt);
-//        
-//        // 기존 영수증 리스트 읽기
-//        List<ReceiptData> receiptList = readReceiptList();
-//        
-//        // 신규 영수증 추가
-//        receiptList.add(receiptData);
-//        
-//        // 파일에 저장
-//        saveToFile(receiptList);
-//        
-//        // 영수증 로그 파일에도 저장 (누적 영수증 기록)
-//        appendToReceiptLog(receiptData);
-//        
-//        System.out.println("[INFO] 영수증이 성공적으로 저장되었습니다.");
-//    }
     
-//    /**
-//     * 영수증 로그 파일에 영수증 추가 저장 (텍스트 형식)
-//     */
-//    private void appendToReceiptLog(ReceiptData receiptData) {
-//        try (FileWriter fw = new FileWriter(RECEIPT_LOG_FILE_PATH, true);
-//             BufferedWriter bw = new BufferedWriter(fw);
-//             PrintWriter pw = new PrintWriter(bw)) {
-//            
-//            LocalDateTime now = LocalDateTime.now();
-//            String timestamp = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-//            
-//            pw.println("=== 영수증 " + receiptData.getReceiptId() + " ===");
-//            pw.println("저장 시간: " + timestamp);
-//            pw.println("레인 번호: " + receiptData.getLaneNumber());
-//            pw.println("총 인원: " + receiptData.getHeadCount() + "명");
-//            pw.println("대여 신발: " + receiptData.getShoesCount() + "켤레");
-//            pw.println("게임 수: " + receiptData.getGameCount() + "게임");
-//            
-//            pw.println("--- 주문 내역 ---");
-//            for (Map.Entry<String, Integer> entry : receiptData.getOrderItems().entrySet()) {
-//                pw.println(entry.getKey() + ": " + entry.getValue() + "개");
-//            }
-//            
-//            pw.println("총 금액: " + receiptData.getTotalFee() + "원");
-//            pw.println("==================");
-//            pw.println();  // 영수증 간 빈 줄 추가
-//            
-//        } catch (IOException e) {
-//            System.err.println("[ERROR] 영수증 로그 파일 저장 중 오류 발생: " + e.getMessage());
-//            e.printStackTrace();
-//        }
-//    }
-    
+    public void saveReceiptToFile(Receipt receipt) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(RECEIPT_FILE_PATH))) {
+            oos.writeObject(receipt);
+            System.out.println("[INFO] 영수증이 성공적으로 저장되었습니다.");
+        } catch (IOException e) {
+            System.err.println("[ERROR] 영수증 저장 중 오류 발생: " + e.getMessage());
+        }
+    }
 
     /**
      * 모든 영수증 읽기
@@ -142,19 +95,7 @@ public class ReceiptFileHandler extends FileSaver{
         return new ArrayList<>();
     }
     
-//    /**
-//     * 특정 영수증 ID로 영수증 조회
-//     */
-//    public ReceiptData findReceiptById(String receiptId) {
-//        List<Receipt> receiptList = readReceiptList();
-//        for (Receipt receipt : receiptList) {
-//            if (receipt.getReceiptId().equals(receiptId)) {
-//                return receipt;
-//            }
-//        }
-//        return null;
-//    }
-    
+
     public Receipt loadReceipt() {
         Object data = loadFromFile();
         if (data instanceof Receipt) {
