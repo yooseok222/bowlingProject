@@ -2,17 +2,17 @@ package kr.kosa.bowl;
 
 import java.util.Scanner;
 
-import kr.kosa.bowl.file.ProfitFileHandler;
-
 public class Menu {
 
 	static Lane[] lanes = new Lane[6];
-	Profit profit;
+	private Profit profit; // 총 수익 -> 파일 존재 유무에 따라 초기화된 후 싱글톤 패턴으로 관리
+	private ReviewList reviewList; // 총 리뷰 -> 파일 존재 유무에 따라 초기화된 후 싱글톤 패턴으로 관리
 
 	Menu() {
 		profit = Profit.getInstance();
+		reviewList = ReviewList.getInstance();
 		for (int i = 0; i < 6; i++) {
-			lanes[i] = new Lane(profit);
+			lanes[i] = new Lane(profit, reviewList);
 			lanes[i].setClean(true);
 		}
 	}
@@ -41,8 +41,8 @@ public class Menu {
 				}
 			} catch (NumberFormatException e) {
 				System.err.println("0 ~ 1, 9만 입력 가능합니다.");
-			} 
-			
+			}
+
 		}
 	}
 
@@ -55,15 +55,15 @@ public class Menu {
 
 				if (laneNum <= 6 && laneNum >= 1) {
 					lanes[laneNum - 1].setLaneNum(laneNum); // laneNum 설정
-					lanes[laneNum-1].useLane();
+					lanes[laneNum - 1].useLane();
 					break;
 				} else {
 					System.err.println("1~6만 입력하실 수 있습니다.");
 				}
 			} catch (NumberFormatException e) {
 				System.err.println("1~6만 입력하실 수 있습니다.");
-			} 
-			
+			}
+
 		}
 
 	}

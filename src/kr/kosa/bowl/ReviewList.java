@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.kosa.bowl.storage.ReviewListFileIO;
+import kr.kosa.bowl.util.AbstractFileIO;
 import lombok.Data;
 
 @Data
@@ -15,9 +17,12 @@ public class ReviewList implements Serializable {
 	private static final long serialVersionUID = 789451654615L;
 	private static ReviewList instance;
 	private List<Review> reviewList;
+	private static AbstractFileIO<List<Review>> fileIO;
 
 	private ReviewList() {
-		reviewList = new ArrayList<>();
+		fileIO = new ReviewListFileIO();
+		List<Review> savedReviews = fileIO.loadFile();
+		this.reviewList = (savedReviews != null) ? savedReviews : new ArrayList<>();
 	}
 
 	public static ReviewList getInstance() {
