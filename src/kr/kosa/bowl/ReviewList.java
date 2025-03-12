@@ -57,7 +57,6 @@ public class ReviewList implements Serializable {
 
 	// 리뷰 출력
 	public void showReviewList() {
-		StringBuilder sb = new StringBuilder();
 		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
 		reviewList.sort(reverseCompare);
 		

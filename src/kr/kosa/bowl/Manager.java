@@ -7,18 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import kr.kosa.bowl.file.SnackFileHandler;
 import kr.kosa.bowl.security.ConfigLoader;
+import kr.kosa.bowl.storage.SnackFileIO;
+import kr.kosa.bowl.util.AbstractFileIO;
 import kr.kosa.bowl.util.SHA256Util;
 
 public class Manager {
 	
 	Scanner sc = new Scanner(System.in);
-
-	SnackFileHandler sf = new SnackFileHandler();
-
-	Map<String, Snack> snackMenu = new LinkedHashMap<>(sf.readSnackMap());
+ 
+	transient AbstractFileIO<Map<String, Snack>> fileIO = new SnackFileIO();
 	
+	Map<String, Snack> snackMenu = fileIO.loadFile(); 
+
 	String adminEmail = ConfigLoader.getProperty("ADMIN_EMAIL");
 	String adminPw = ConfigLoader.getProperty("ADMIN_PW");
 	
@@ -190,7 +191,8 @@ public class Manager {
 		Snack snack = new Snack(snackName, snackPrice, snackCnt);
 		
 		snackMenu.put(snackName, snack);
-		sf.saveSnackMap(snackMenu);
+		
+		fileIO.saveFile(snackMenu);
 		
 		System.out.println("상품이 추가되었습니다.");
 	};
@@ -230,7 +232,7 @@ public class Manager {
 	}
 
 	/** 상품 삭제 */
-	private void delSnack() {
+	private void delSnack() {  
 		
 		System.out.println("삭제하실 상품 이름을 입력하세요 : ");
 		String snackName = sc.nextLine();
@@ -247,7 +249,8 @@ public class Manager {
 				System.out.println(answer.toLowerCase());
 				if(answer.toUpperCase().equals("Y")) {
 					snackMenu.remove(snackName);
-					sf.saveSnackMap(snackMenu);
+//					sf.saveSnackMap(snackMenu);
+					fileIO.saveFile(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
 				}else if(answer.toUpperCase().equals("N")){ 
@@ -344,9 +347,9 @@ public class Manager {
 		
 		do {
 			System.out.println("수정하실 상품의 새 이름을 입력해주세요");
-			
+			 
 			newName = sc.nextLine();
-			
+			 
 			if(newName.isBlank()) {
 				System.err.println("상품명이 입력되지 않았습니다.");
 			}else {
@@ -354,7 +357,8 @@ public class Manager {
 				if(snackNameChanged != null) {
 					snackNameChanged.setSnackName(newName);			
 					snackMenu.put(newName, snackNameChanged);
-					sf.saveSnackMap(snackMenu);
+					fileIO.saveFile(snackMenu);
+//					sf.saveSnackMap(snackMenu);  
 				}
 				System.out.println("상품 이름 수정이 완료되었습니다.");	
 			}	
@@ -374,15 +378,16 @@ public class Manager {
 			if(snackPriceChanged != null) {
 				snackPriceChanged.setSnackPrice(newPrice);
 				snackMenu.put(snackName, snackPriceChanged);
-				sf.initializeFile();
+				fileIO.saveFile(snackMenu);
+//				sf.initializeFile();
 			}
 			System.out.println("상품 가격 수정이 완료되었습니다.");
 		} catch (NumberFormatException e) {
 			System.err.println("가격이 입력되지 않았습니다.");
 		}
 
-	}
-	
+	} 
+	 
 	/** 매출 조회 */
 	private void getProfit() {
 		System.out.println("매출 조회 페이지");
@@ -460,7 +465,7 @@ public class Manager {
 	private void getTopSellingMenu() {
 	
 		List<Map.Entry<String, Integer>> top3Menus = Profit.getInstance().getTop3Menus();
-	    Map<String, Snack> snackMap = SnackFile.readSnackFile(); // 스낵 정보를 담고 있는 맵 가져오기
+	    Map<String, Snack> snackMap = fileIO.loadFile();  // 스낵 정보를 담고 있는 맵 가져오기
 	    
 	    System.out.println("\n================ 매출액 기준 베스트 간식 TOP 3 ================");
 	    
