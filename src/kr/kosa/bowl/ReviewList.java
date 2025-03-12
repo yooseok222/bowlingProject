@@ -38,6 +38,16 @@ public class ReviewList implements Serializable {
 		return instance;
 	}
 
+	// 고유번호에 해당하는 리뷰 받아오기
+	public Review findReview(int num) {
+		for (Review r : reviewList) {
+			if (r.getReviewNum() == num) {
+				return r;
+			}
+		}
+		return null;
+	}
+
 	// 리뷰 리스트에 리뷰 추가
 	public void addReview(Review review) {
 		reviewList.add(review);
