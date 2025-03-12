@@ -10,8 +10,7 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 import kr.kosa.bowl.factory.ReceiptFactory;
-import kr.kosa.bowl.storage.ReceiptFileIO;
-import kr.kosa.bowl.util.AbstractFileIO;
+import kr.kosa.bowl.file.ReceiptFileHandler;
 import lombok.Data;
 
 @Data
@@ -28,9 +27,8 @@ public class Lane implements Serializable {
 	private int gameCnt; // 게임카운트
 	private Game game; // 게임객체
 	private List<Map<String, Integer>> orderMenuList;
-
-	private Profit profit; // 싱글톤 패턴 + 의존성 주입
-	private ReviewList reviewList;// 싱글톤 패턴 + 의존성 주입
+	private Profit profit;
+	private ReviewList reviewList;
 
 	transient Scanner sc = new Scanner(System.in);
 
@@ -42,6 +40,7 @@ public class Lane implements Serializable {
 		this.game = new Game(orderMenuList);
 		this.selectedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 		this.gameCnt = 0;
+
 	}
 
 	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */
@@ -73,7 +72,14 @@ public class Lane implements Serializable {
 			receiptPrintOrSave(receipt); // 영수증을 파일로 저장할지 선택
 			profit.addReceipt(receipt);
 		}
-		profit.saveToFile(); // 파일에 쓰기 작업 수행 (레인별 단 한번만 수행)
+		
+		// 리뷰작성
+		reviewOrNot();
+		
+		reviewList.showReviewList();
+		reviewList.saveToFile();
+		profit.saveToFile();
+		
 	}
 
 	// 1. 인원수 입력 및 신발선택
@@ -193,10 +199,9 @@ public class Lane implements Serializable {
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
 				if (cmd == 1) {
-					// 영수증 파일 쓰기 작업 수행
-					AbstractFileIO<Receipt> fileIO = new ReceiptFileIO();
-					fileIO.saveFile(receipt);
-					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
+					ReceiptFileHandler rf = new ReceiptFileHandler();
+					rf.saveReceiptToFile(receipt); // 영수증 파일로 출력하는 함수 (아직 미완성)
+//					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
 					break;
 				} else if (cmd == 2) {
 					System.out.println("\n🚪 영수증을 저장하지 않고 종료합니다.");
@@ -209,4 +214,29 @@ public class Lane implements Serializable {
 			}
 		}
 	}
+
+	// 리뷰작성할지 말지 메서드
+	private void reviewOrNot() {
+		System.out.println("리뷰를 작성하시겠습니까? Y/N");
+		String input = sc.nextLine().toUpperCase();
+		if (input.equals("Y")) {
+			// 리뷰작성메서드
+			writeReview();
+		} else {
+			return;
+		}
+
+	}
+
+	// 리뷰작성 메서드
+	private void writeReview() {
+		System.out.print("별 개수 입력 : \n");
+		double starCnt = Double.parseDouble(sc.nextLine());
+		System.out.print("리뷰작성 : \n");
+		String reviewContent = sc.nextLine();
+
+		reviewList.addReview(new Review(laneNum, reviewContent, starCnt));
+
+	}
+
 }

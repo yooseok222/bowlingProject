@@ -32,6 +32,16 @@ public class ReviewList implements Serializable {
 		return instance;
 	}
 
+	// 리뷰 리스트에 리뷰 추가
+	public void addReview(Review review) {
+		reviewList.add(review);
+	}
+
+	// 파일 저장
+	public void saveToFile() {
+		fileIO.saveFile(reviewList);
+	}
+
 	// 리뷰 출력 (createAt)
 	public void showReviewList() {
 		StringBuilder sb = new StringBuilder();
@@ -45,7 +55,7 @@ public class ReviewList implements Serializable {
 		System.out.println(sb);
 	}
 	
-	
+	// 리뷰 출력(별점기준)
 
 	// 별 찍는 함수
 	public static String generateCircleRating(double rating) {
