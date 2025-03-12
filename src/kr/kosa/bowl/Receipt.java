@@ -70,6 +70,7 @@ public class Receipt implements Serializable {
 		sb.append("                🎳 영 수 증 🎳              \n");
 		sb.append("=============================================\n\n");
 		sb.append(String.format("거래 일시 : %s\n", lane.getSelectedAt()));
+		sb.append(String.format("레인 번호 : %s\n", lane.getLaneNum()));
 		sb.append(String.format("총 인원 수 : %-2d명\n", lane.getHeadCnt()));
 		sb.append(String.format("신발 대여 : %-2d켤레\n", lane.getShoesCnt()));
 		sb.append(String.format("게임 횟수 : %-2d번\n\n", lane.getGameCnt()));
