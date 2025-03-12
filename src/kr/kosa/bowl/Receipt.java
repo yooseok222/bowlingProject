@@ -12,7 +12,7 @@ public class Receipt implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8194165132L;
+	private static final long serialVersionUID = 8194163212332L;
 
 	private final int gameFee;
 	private final int shoesFee;
