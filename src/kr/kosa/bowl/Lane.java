@@ -72,14 +72,14 @@ public class Lane implements Serializable {
 			receiptPrintOrSave(receipt); // 영수증을 파일로 저장할지 선택
 			profit.addReceipt(receipt);
 		}
-		
+
 		// 리뷰작성
 		reviewOrNot();
-		
+
 		reviewList.showReviewList();
 		reviewList.saveToFile();
 		profit.saveToFile();
-		
+
 	}
 
 	// 1. 인원수 입력 및 신발선택
@@ -235,7 +235,9 @@ public class Lane implements Serializable {
 		System.out.print("리뷰작성 : \n");
 		String reviewContent = sc.nextLine();
 
-		reviewList.addReview(new Review(laneNum, reviewContent, starCnt));
+		int reviewNum = reviewList.getLastReviewNum();
+
+		reviewList.addReview(new Review(reviewNum, laneNum, reviewContent, starCnt));
 
 	}
 
