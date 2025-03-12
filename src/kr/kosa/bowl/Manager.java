@@ -245,7 +245,7 @@ public class Manager {
 					sf.saveSnackMap(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
-				}else if(answer.toUpperCase().equals("N")){
+				}else if(answer.toUpperCase().equals("N")){ 
 					System.out.println("상품 삭제를 취소하셨습니다.");
 					escape = true;
 				}else {
@@ -400,10 +400,6 @@ public class Manager {
 			default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
 				break;
 		}
-		
-//		Profit.getInstance().showReceiptList();
-		
-		
 	}
 
 
