@@ -10,7 +10,8 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 import kr.kosa.bowl.factory.ReceiptFactory;
-import kr.kosa.bowl.file.ReceiptFileHandler;
+import kr.kosa.bowl.storage.ReceiptFileIO;
+import kr.kosa.bowl.util.AbstractFileIO;
 import lombok.Data;
 
 @Data
@@ -27,18 +28,20 @@ public class Lane implements Serializable {
 	private int gameCnt; // 게임카운트
 	private Game game; // 게임객체
 	private List<Map<String, Integer>> orderMenuList;
-	private Profit profit;
+
+	private Profit profit; // 싱글톤 패턴 + 의존성 주입
+	private ReviewList reviewList;// 싱글톤 패턴 + 의존성 주입
 
 	transient Scanner sc = new Scanner(System.in);
 
 	/* Lane 생성자 */
-	public Lane(Profit profit) {
+	public Lane(Profit profit, ReviewList reviewList) {
 		this.profit = profit;
+		this.reviewList = reviewList;
 		this.orderMenuList = new ArrayList<>();
 		this.game = new Game(orderMenuList);
 		this.selectedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 		this.gameCnt = 0;
-
 	}
 
 	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */
@@ -70,7 +73,7 @@ public class Lane implements Serializable {
 			receiptPrintOrSave(receipt); // 영수증을 파일로 저장할지 선택
 			profit.addReceipt(receipt);
 		}
-
+		profit.saveToFile(); // 파일에 쓰기 작업 수행 (레인별 단 한번만 수행)
 	}
 
 	// 1. 인원수 입력 및 신발선택
@@ -100,7 +103,7 @@ public class Lane implements Serializable {
 				if (this.shoesCnt < 0 || this.shoesCnt > this.headCnt) {
 					System.err.println("신발 갯수는 최소 0개, 최대 " + this.headCnt + "개까지 가능합니다. 다시 입력하세요.");
 				} else {
-					System.out.println("입력한 신발의 갯수는 "+shoesCnt+" 개 입니다.");
+					System.out.println("입력한 신발의 갯수는 " + shoesCnt + " 개 입니다.");
 					break;
 				}
 			} catch (NumberFormatException e) {
@@ -159,7 +162,7 @@ public class Lane implements Serializable {
 	private void selectBowl() {
 		gameCnt++;
 		game.start(this.headCnt, this.shoesCnt);
-		
+
 		// 게임이 끝난 후 다시 선택하도록 루프 유지
 		System.out.println("\n🎳 게임이 끝났습니다! 추가 게임을 진행하거나 결제를 진행하세요.");
 	}
@@ -189,10 +192,11 @@ public class Lane implements Serializable {
 
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
-				if (cmd == 1) { 
-					ReceiptFileHandler rf = new ReceiptFileHandler();
-					rf.saveReceiptToFile(receipt); //영수증 파일로 출력하는 함수 (아직 미완성)
-//					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
+				if (cmd == 1) {
+					// 영수증 파일 쓰기 작업 수행
+					AbstractFileIO<Receipt> fileIO = new ReceiptFileIO();
+					fileIO.saveFile(receipt);
+					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
 					break;
 				} else if (cmd == 2) {
 					System.out.println("\n🚪 영수증을 저장하지 않고 종료합니다.");
