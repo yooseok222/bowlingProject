@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 
-public class Game implements Serializable{
+public class Game implements Serializable {
 	/**
 	 * 
 	 */
@@ -118,7 +118,7 @@ public class Game implements Serializable{
 			try {
 				System.out.println("🎳 공을 굴리세요!");
 				int userRoll = Integer.parseInt(sc.nextLine()) % (maxPins + 1);
-				
+
 				score = maxPins - Math.abs(randomRoll - userRoll);
 				System.out.println("🎳 " + score + "개의 핀을 쓰러뜨렸습니다!");
 

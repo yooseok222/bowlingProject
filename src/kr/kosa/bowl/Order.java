@@ -15,7 +15,7 @@ public class Order {
 	private Map<String, Snack> snackMap;
 	private Scanner sc;
 	transient AbstractFileIO<Map<String, Snack>> fileIO = new SnackFileIO();
-	
+
 	// 생성자
 	public Order() {
 		sc = new Scanner(System.in);

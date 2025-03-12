@@ -10,9 +10,8 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 import kr.kosa.bowl.factory.ReceiptFactory;
-import kr.kosa.bowl.file.ReceiptFileHandler;
-import kr.kosa.bowl.util.AbstractFileIO;
 import kr.kosa.bowl.storage.ReceiptFileIO;
+import kr.kosa.bowl.util.AbstractFileIO;
 import lombok.Data;
 
 @Data
@@ -257,20 +256,18 @@ public class Lane implements Serializable {
 		while (true) {
 			System.out.print("리뷰작성 : \n");
 			reviewContent = sc.nextLine().trim(); // 입력값 앞뒤 공백 제거
-			
+
 			// 금지어 확인
-		    if (PostFilter.containsBannedWords(reviewContent)) {
-		        System.out.println("🚨 리뷰에 금지어가 포함되어 있습니다. 다시 입력해주세요.");
-		        continue; // 다시 입력받기
-		    }
-			
-			if(reviewContent.isEmpty()) {
+			if (PostFilter.containsBannedWords(reviewContent)) {
+				System.out.println("🚨 리뷰에 금지어가 포함되어 있습니다. 다시 입력해주세요.");
+				continue; // 다시 입력받기
+			}
+
+			if (reviewContent.isEmpty()) {
 				System.out.println("❌ 리뷰는 공백일 수 없습니다. 내용을 입력해주세요.");
-			}
-			else if(reviewContent.length()>50) {
+			} else if (reviewContent.length() > 50) {
 				System.out.println("❌ 리뷰는 50자 이하로 작성해주세요.");
-			}
-			else {
+			} else {
 				break;
 			}
 		}
