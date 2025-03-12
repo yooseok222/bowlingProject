@@ -406,13 +406,12 @@ public class Manager {
 
 	/** 전체 매출 조회 */
 	private void getProfitAll() {
-	    System.out.println("전체 매출 조회 페이지");
-	    
-	    ProfitFileHandler pf = new ProfitFileHandler();
-	    System.out.println(pf.loadProfit());
-	    
-		pf.saveProfit();
+	    System.out.println("\n📊 전체 매출 조회 페이지");
+
+	    Profit profit = Profit.getInstance();
+	    profit.showReceiptList(); // 🔹 영수증 형식으로 출력
 	}
+
 	
 	/** 월별 매출 조회 */
 	private void getProfitByMonth() {
