@@ -32,6 +32,16 @@ public class ReviewList implements Serializable {
 		return instance;
 	}
 
+	// 리뷰 리스트에 리뷰 추가
+	public void addReview(Review review) {
+		reviewList.add(review);
+	}
+
+	// 파일 저장
+	public void saveToFile() {
+		fileIO.saveFile(reviewList);
+	}
+
 	// 리뷰 출력
 	public void showReviewList() {
 		StringBuilder sb = new StringBuilder();
