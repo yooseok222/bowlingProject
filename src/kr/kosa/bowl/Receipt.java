@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.kosa.bowl.storage.SnackFileIO;
+import kr.kosa.bowl.util.AbstractFileIO;
 import lombok.Data;
 
 @Data
@@ -22,13 +24,18 @@ public class Receipt implements Serializable {
 	private Map<String, Snack> snackMap;
 	private List<Map<String, Integer>> orderMenuList;
 	private Map<String, Integer> mergedOrders; // 통합 주문 내역
+	
+	
 
 	// 생성자
 	public Receipt(Lane lane) {
 		this.gameFee = 5000;
 		this.shoesFee = 2500;
 		this.lane = lane;
-		this.snackMap = SnackFile.readSnackFile();
+		
+		AbstractFileIO<Map<String, Snack>> fileIO = new SnackFileIO();
+		this.snackMap = fileIO.loadFile(); 
+		
 		orderMenuList = lane.getOrderMenuList();
 		this.totalFee = calculateTotalFee();
 		mergeOrders();

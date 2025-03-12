@@ -54,7 +54,7 @@ public class ReviewList implements Serializable {
 	public void showReviewList() {
 		StringBuilder sb = new StringBuilder();
 		for (Review review : reviewList) {
-
+			sb.append(review.getReviewNum()).append("\n");
 			sb.append("\n").append(review.getContent()).append("\n");
 			if (review.isReview()) {
 				sb.append("별점 : ").append(generateCircleRating(review.getStarCnt())).append("\n\n");

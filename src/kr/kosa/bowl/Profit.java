@@ -15,7 +15,7 @@ public class Profit implements Serializable {
 	private static final long serialVersionUID = 3515613435L;
 	private static Profit instance;
 	private List<Receipt> receiptList;
-	private static AbstractFileIO<List<Receipt>> fileIO;
+	private static transient AbstractFileIO<List<Receipt>> fileIO;
 
 	private Profit() {
 		fileIO = new ProfitFileIO();
