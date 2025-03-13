@@ -41,7 +41,7 @@ public class Order {
 					printSnackMap();
 					break;
 				case 2:
-					orderSnack(); // Scanner를 인자로 넘김
+					orderSnack();
 					break;
 				case 3:
 					printOrderMap();

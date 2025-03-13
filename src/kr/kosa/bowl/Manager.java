@@ -15,6 +15,7 @@ public class Manager {
 
 	transient AbstractFileIO<Map<String, Snack>> fileIO = new SnackFileIO();
 	Map<String, Snack> snackMenu = fileIO.loadFile();
+	ReviewList reviewList = ReviewList.getInstance();
 
 	String adminEmail = ConfigLoader.getProperty("ADMIN_EMAIL");
 	String adminPw = ConfigLoader.getProperty("ADMIN_PW");
@@ -93,6 +94,8 @@ public class Manager {
 				manageBannedWords();
 				break;
 			case "0":
+				reviewList.saveToFile();
+				fileIO.saveFile(snackMenu);
 				return;
 			default:
 				System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
@@ -192,8 +195,6 @@ public class Manager {
 
 		snackMenu.put(snackName, snack);
 
-		fileIO.saveFile(snackMenu);
-
 		System.out.println("상품이 추가되었습니다.");
 	};
 
@@ -248,8 +249,6 @@ public class Manager {
 				System.out.println(answer.toLowerCase());
 				if (answer.toUpperCase().equals("Y")) {
 					snackMenu.remove(snackName);
-//					sf.saveSnackMap(snackMenu);
-					fileIO.saveFile(snackMenu);
 					System.out.println("상품이 삭제되었습니다.");
 					escape = true;
 				} else if (answer.toUpperCase().equals("N")) {
@@ -360,8 +359,6 @@ public class Manager {
 				if (snackNameChanged != null) {
 					snackNameChanged.setSnackName(newName);
 					snackMenu.put(newName, snackNameChanged);
-					fileIO.saveFile(snackMenu);
-//					sf.saveSnackMap(snackMenu);  
 				}
 				System.out.println("상품 이름 수정이 완료되었습니다.");
 			}
@@ -383,8 +380,6 @@ public class Manager {
 			if (snackPriceChanged != null) {
 				snackPriceChanged.setSnackPrice(newPrice);
 				snackMenu.put(snackName, snackPriceChanged);
-				fileIO.saveFile(snackMenu);
-//				sf.initializeFile();
 			}
 			System.out.println("상품 가격 수정이 완료되었습니다.");
 		} catch (NumberFormatException e) {
@@ -489,11 +484,9 @@ public class Manager {
 	private void getReviewList() {
 
 		// 리뷰 목록 불러오는 메서드
-		ReviewList.getInstance().showReviewList();
+		reviewList.showReviewList();
 
 		// 리뷰 메뉴
-		String inputMonth = "";
-
 		while (true) {
 
 			System.out.println("원하시는 메뉴를 선택해주세요");
@@ -522,17 +515,14 @@ public class Manager {
 		try {
 			int inputLaneNum = Integer.parseInt(sc.nextLine());
 
-			ReviewList reviewList = ReviewList.getInstance();
-
 			if (reviewList.findReview(inputLaneNum).isReview()) {
 				// 댓글달기
 				System.out.println("댓글 내용을 입력해주세요.");
 				String inputReply = sc.nextLine();
 
-				int reviewNum = ReviewList.getInstance().getLastReviewNum();
+				int reviewNum = reviewList.getLastReviewNum();
 
-				ReviewList.getInstance().addReview(new Review(reviewNum, inputLaneNum, inputReply));
-				ReviewList.getInstance().saveToFile();
+				reviewList.addReview(new Review(reviewNum, inputLaneNum, inputReply));
 
 				try {
 					System.err.println("댓글이 등록되었습니다.");
