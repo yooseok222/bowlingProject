@@ -62,7 +62,7 @@ public class Manager {
 			System.out.println("관리자 이메일을 입력하세요 : "); 
 			String inputEmail = sc.nextLine();
 			
-			if(isValidEmail(inputEmail)) {
+			if(verifyEmail(inputEmail)) {
 				System.out.println("비밀번호를 입력하세요 : ");  
 				String inputPw = sc.nextLine();	 
 				isCorrect = isValidEmail(inputEmail) && verifyPassword(inputPw) ? true : false;
@@ -404,10 +404,6 @@ public class Manager {
 			case "2" : getProfitByMonth();
 				break;
 			case "3" : getTopSellingMenu();
-				break;
-			case "4" : 
-				break;
-			case "5" : 
 				break;
 			case "0" : 
 				return;
