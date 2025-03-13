@@ -69,7 +69,7 @@ public class Receipt implements Serializable {
 	}
 
 	// 영수증 내역 출력
-	public void showReceipt() {
+	public String showReceipt() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("=============================================\n");
 		sb.append("                🎳 영 수 증 🎳              \n");
@@ -103,5 +103,6 @@ public class Receipt implements Serializable {
 		sb.append("=============================================\n");
 
 		System.out.println(sb);
+		return sb.toString();
 	}
 }
