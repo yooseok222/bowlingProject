@@ -24,18 +24,16 @@ public class Receipt implements Serializable {
 	private Map<String, Snack> snackMap;
 	private List<Map<String, Integer>> orderMenuList;
 	private Map<String, Integer> mergedOrders; // 통합 주문 내역
-	
-	
 
 	// 생성자
 	public Receipt(Lane lane) {
 		this.gameFee = 5000;
 		this.shoesFee = 2500;
 		this.lane = lane;
-		
+
 		AbstractFileIO<Map<String, Snack>> fileIO = new SnackFileIO();
-		this.snackMap = fileIO.loadFile(); 
-		
+		this.snackMap = fileIO.loadFile();
+
 		orderMenuList = lane.getOrderMenuList();
 		this.totalFee = calculateTotalFee();
 		mergeOrders();

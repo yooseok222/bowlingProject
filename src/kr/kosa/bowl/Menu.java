@@ -8,7 +8,7 @@ public class Menu {
 	private Profit profit; // 총 수익 -> 파일 존재 유무에 따라 초기화된 후 싱글톤 패턴으로 관리
 	private ReviewList reviewList; // 총 리뷰 -> 파일 존재 유무에 따라 초기화된 후 싱글톤 패턴으로 관리
 	private Snack snack;
-	
+
 	private Scanner sc;
 
 	Menu() {
@@ -16,7 +16,7 @@ public class Menu {
 		profit = Profit.getInstance();
 		reviewList = ReviewList.getInstance();
 		snack = Snack.getInstance();
-		
+
 		for (int i = 0; i < 6; i++) {
 			lanes[i] = new Lane(profit, reviewList);
 			lanes[i].setClean(true);
