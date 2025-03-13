@@ -11,12 +11,9 @@ import lombok.Data;
 public class Snack implements Serializable {
 
 	private static final long serialVersionUID = 548165165343L;
-	private static Snack instance;
 	private String snackName;
 	private int snackPrice;
 	private int snackCnt;
-	private transient Map<String, Snack> snackMap;
-	private static transient AbstractFileIO<Map<String, Snack>> fileIO;
 
 	public Snack(String snackName, int snackPrice, int snackCnt) {
 		this.snackName = snackName;
