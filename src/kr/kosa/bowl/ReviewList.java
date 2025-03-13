@@ -59,24 +59,32 @@ public class ReviewList implements Serializable {
 		if (reviewList.isEmpty()) {
 			return 0;
 		}
-		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
-		reviewList.sort(reverseCompare);
+		
+		sortReviewList("createdAt");
 		return reviewList.getFirst().getReviewNum();
 	}
 
 	// 리뷰 출력
 	public void showReviewList() {
-		Comparator<Review> reverseCompare = Comparator.comparing(Review::getReviewNum).reversed();
-		reviewList.sort(reverseCompare);
-
+		sortReviewList("createdAt");
 		printReviewList();
 	}
 
 	public void showSortByStarReviewList() {
-		Comparator<Review> starCompare = Comparator.comparingDouble(Review::getStarCnt).reversed();
-		reviewList.sort(starCompare);
-
+		sortReviewList("star");
 		printReviewList();
+	}
+
+	public void sortReviewList(String sortby) {
+		Comparator<Review> sortCondition = null;
+
+		if (sortby.equals("createdAt")) {
+			sortCondition = Comparator.comparing(Review::getReviewNum);
+		} else if (sortby.equals("star")) {
+			sortCondition = Comparator.comparingDouble(Review::getStarCnt);
+		}
+
+		reviewList.sort(sortCondition.reversed());
 	}
 
 	public void printReviewList() {
@@ -85,7 +93,7 @@ public class ReviewList implements Serializable {
 
 		int idx = 1;
 		for (Review review : reviewList) {
-			if (idx % 3 == 0) {
+			if (idx % 6 == 0) {
 				System.out.println("계속 보시겠습니까? 아니라면 n을 입력해주세요.");
 				String in = sc.nextLine().toLowerCase();
 				if (in.equals("n")) {
@@ -107,7 +115,7 @@ public class ReviewList implements Serializable {
 					}
 				}
 
-				sb.append("===============================================\n\n");
+				sb.append("===============================================\n");
 
 				idx++;
 				System.out.println(sb);
