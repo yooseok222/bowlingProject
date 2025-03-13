@@ -52,10 +52,10 @@ public class Manager {
 
 			System.out.println("관리자 이메일을 입력하세요 : ");
 			String inputEmail = sc.nextLine();
-
-			if (isValidEmail(inputEmail)) {
-				System.out.println("비밀번호를 입력하세요 : ");
-				String inputPw = sc.nextLine();
+			
+			if(verifyEmail(inputEmail)) {
+				System.out.println("비밀번호를 입력하세요 : ");  
+				String inputPw = sc.nextLine();	 
 				isCorrect = isValidEmail(inputEmail) && verifyPassword(inputPw) ? true : false;
 				if (!isCorrect)
 					System.err.println("잘못 입력하셨습니다. 다시 입력해주세요.");
@@ -398,26 +398,19 @@ public class Manager {
 		System.out.println("매출 조회 페이지");
 		System.out.println("1. 전체 매출 조회 | 2. 월별 매출 조회 | 3. 가장 많이 팔린 메뉴 0. 관리자 메뉴로 돌아가기 ");
 		String inputMenu = sc.nextLine();
+		
+		switch(inputMenu) {
+			case "1" : getProfitAll();
+				break;
+			case "2" : getProfitByMonth();
+				break;
+			case "3" : getTopSellingMenu();
+				break;
+			case "0" : 
+				return;
+			default : System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
+				break;
 
-		switch (inputMenu) {
-		case "1":
-			getProfitAll();
-			break;
-		case "2":
-			getProfitByMonth();
-			break;
-		case "3":
-			getTopSellingMenu();
-			break;
-		case "4":
-			break;
-		case "5":
-			break;
-		case "0":
-			return;
-		default:
-			System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
-			break;
 		}
 	}
 
