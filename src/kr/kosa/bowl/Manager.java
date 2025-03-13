@@ -396,7 +396,7 @@ public class Manager {
 	/** 매출 조회 */
 	private void getProfit() {
 		System.out.println("매출 조회 페이지");
-		System.out.println("1. 전체 매출 조회 | 2. 월별 매출 조회 | 3. 가장 많이 팔린 메뉴 0. 관리자 메뉴로 돌아가기 ");
+		System.out.println("1. 전체 매출 조회 | 2. 월별 매출 조회 | 3. 가장 많이 팔린 메뉴 | 0. 관리자 메뉴로 돌아가기 ");
 		String inputMenu = sc.nextLine();
 		
 		switch(inputMenu) {
@@ -518,29 +518,33 @@ public class Manager {
 	private void addCommentToReview() {
 
 		System.out.println("댓글을 달고 싶으신 글의 번호를 입력해주세요.");
+		
+		try {
+			int inputLaneNum = Integer.parseInt(sc.nextLine());
 
-		int inputLaneNum = Integer.parseInt(sc.nextLine());
+			ReviewList reviewList = ReviewList.getInstance();
 
-		ReviewList reviewList = ReviewList.getInstance();
+			if (reviewList.findReview(inputLaneNum).isReview()) {
+				// 댓글달기
+				System.out.println("댓글 내용을 입력해주세요.");
+				String inputReply = sc.nextLine();
 
-		if (reviewList.findReview(inputLaneNum).isReview()) {
-			// 댓글달기
-			System.out.println("댓글 내용을 입력해주세요.");
-			String inputReply = sc.nextLine();
+				int reviewNum = ReviewList.getInstance().getLastReviewNum();
 
-			int reviewNum = ReviewList.getInstance().getLastReviewNum();
+				ReviewList.getInstance().addReview(new Review(reviewNum, inputLaneNum, inputReply));
+				ReviewList.getInstance().saveToFile();
 
-			ReviewList.getInstance().addReview(new Review(reviewNum, inputLaneNum, inputReply));
-			ReviewList.getInstance().saveToFile();
-
-			try {
-				System.err.println("댓글이 등록되었습니다.");
-			} catch (Exception e) {
-				System.err.println("댓글 등록 중 오류가 발생했습니다.");
+				try {
+					System.err.println("댓글이 등록되었습니다.");
+				} catch (Exception e) {
+					System.err.println("댓글 등록 중 오류가 발생했습니다.");
+				}
+			} else {
+				System.err.println("답글에 답글은 달 수 없습니다.");
+				return;
 			}
-		} else {
-			System.err.println("답글에 답글은 달 수 없습니다.");
-			return;
+		} catch (Exception e) {
+			System.err.println("0 이상의 숫자를 입력하세요.");
 		}
 
 	}
