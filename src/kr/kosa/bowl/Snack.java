@@ -24,16 +24,4 @@ public class Snack implements Serializable {
 		this.snackCnt = snackCnt;
 	}
 
-	private Snack() {
-		fileIO = new SnackFileIO();
-		Map<String, Snack> readSnackMap = fileIO.loadFile();
-		this.snackMap = readSnackMap;
-	}
-
-	public static Snack getInstance() {
-		if (instance == null) {
-			instance = new Snack();
-		}
-		return instance;
-	}
 }

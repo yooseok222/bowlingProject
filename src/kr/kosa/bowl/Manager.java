@@ -257,7 +257,7 @@ public class Manager {
 				} else {
 					System.err.println("잘못 입력하셨습니다.");
 				}
-			} while (escape = false);
+			} while (escape == false);
 
 		}
 	};
