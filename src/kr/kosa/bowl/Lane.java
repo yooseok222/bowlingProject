@@ -1,5 +1,8 @@
 package kr.kosa.bowl;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,9 +13,6 @@ import java.util.Scanner;
 
 import kr.kosa.bowl.factory.OrderFactory;
 import kr.kosa.bowl.factory.ReceiptFactory;
-
-import kr.kosa.bowl.storage.ReceiptFileIO;
-import kr.kosa.bowl.util.AbstractFileIO;
 import lombok.Data;
 
 @Data
@@ -200,9 +200,7 @@ public class Lane implements Serializable {
 				int cmd = Integer.parseInt(sc.nextLine().trim());
 
 				if (cmd == 1) {
-					AbstractFileIO<Receipt> fileIO = new ReceiptFileIO();
-					fileIO.saveFile(receipt);
-//					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
+					saveReceiptTxt(receipt);
 					break;
 				} else if (cmd == 2) {
 					System.out.println("\n🚪 영수증을 저장하지 않고 종료합니다.");
@@ -213,6 +211,15 @@ public class Lane implements Serializable {
 			} catch (NumberFormatException e) {
 				System.out.println("유효한 숫자를 입력하세요.");
 			}
+		}
+	}
+
+	private void saveReceiptTxt(Receipt receipt) {
+		try (PrintWriter writer = new PrintWriter(new FileWriter("receipt.txt"))) {
+			writer.print(receipt.showReceipt());
+			System.out.println("💾 영수증이 저장되었습니다: " + "receipt.txt");
+		} catch (IOException e) {
+			System.err.println("❌ 영수증 저장 중 오류 발생: " + e.getMessage());
 		}
 	}
 
