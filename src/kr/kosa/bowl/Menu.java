@@ -3,12 +3,11 @@ package kr.kosa.bowl;
 import java.util.Scanner;
 
 public class Menu {
-
 	static Lane[] lanes = new Lane[6];
+	
 	private Profit profit; // 총 수익 -> 파일 존재 유무에 따라 초기화된 후 싱글톤 패턴으로 관리
 	private ReviewList reviewList; // 총 리뷰 -> 파일 존재 유무에 따라 초기화된 후 싱글톤 패턴으로 관리
 	private Snack snack;
-
 	private Scanner sc;
 
 	Menu() {
@@ -36,7 +35,7 @@ public class Menu {
 					manager.validateManager();
 					break;
 				case 1:
-					selectLane();
+					selectLane(false);
 					break;
 				case 2:
 					gotoReview();
@@ -79,17 +78,27 @@ public class Menu {
 
 	}
 
-	private void selectLane() {
-		System.out.println("레인을 선택해주세요.(1~6)");
+	static int selectLane(boolean isManager) {
+		if (isManager)  System.out.println("청소할 레인의 번호를 입력해주세요. (1~6)");
+		else System.out.println("레인을 선택해주세요.(1~6)");
+		System.out.println("0을 입력시 이전 화면으로 돌아갑니다.");
+		
+		Scanner lane = new Scanner(System.in);
+		
 		while (true) {
 			printLaneAvail();
 			try {
-				int laneNum = Integer.parseInt(sc.nextLine());
+				int laneNum = Integer.parseInt(lane.nextLine());
 
+				if (laneNum == 0) return -1;
 				if (laneNum <= 6 && laneNum >= 1) {
-					lanes[laneNum - 1].setLaneNum(laneNum); // laneNum 설정
-					lanes[laneNum - 1].useLane();
-					break;
+					if (isManager) {
+						return laneNum;
+					} else {
+						lanes[laneNum - 1].setLaneNum(laneNum); // laneNum 설정
+						lanes[laneNum - 1].useLane();
+						break;
+					}
 				} else {
 					System.err.println("1~6만 입력하실 수 있습니다.");
 				}
@@ -98,7 +107,7 @@ public class Menu {
 			}
 
 		}
-
+		return 0;
 	}
 
 	static void printLaneAvail() {
