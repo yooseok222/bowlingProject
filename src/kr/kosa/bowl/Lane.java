@@ -201,7 +201,6 @@ public class Lane implements Serializable {
 
 				if (cmd == 1) {
 					saveReceiptTxt(receipt);
-					System.out.println("\n💾 영수증이 파일로 저장되었습니다.");
 					break;
 				} else if (cmd == 2) {
 					System.out.println("\n🚪 영수증을 저장하지 않고 종료합니다.");
@@ -218,7 +217,7 @@ public class Lane implements Serializable {
 	private void saveReceiptTxt(Receipt receipt) {
 		try (PrintWriter writer = new PrintWriter(new FileWriter("receipt.txt"))) {
 			writer.print(receipt.showReceipt());
-			System.out.println("✅ 영수증이 저장되었습니다: " + "receipt.txt");
+			System.out.println("💾 영수증이 저장되었습니다: " + "receipt.txt");
 		} catch (IOException e) {
 			System.err.println("❌ 영수증 저장 중 오류 발생: " + e.getMessage());
 		}
