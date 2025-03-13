@@ -48,7 +48,7 @@ public class Lane implements Serializable {
 	/* 🎳 레인 사용 메서드 (Menu에서 호출됨) */
 	public void useLane() {
 		if (!isClean) { // 레인이 사용 중이면
-			System.err.println("⚠ 현재 레인은 사용 중입니다. 다른 레인을 선택해주세요.");
+			System.err.println("⚠ 현재 레인은 정비 중입니다. 다른 레인을 선택해주세요.");
 			return;
 		}
 
