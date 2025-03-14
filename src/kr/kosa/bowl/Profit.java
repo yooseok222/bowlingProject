@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import kr.kosa.bowl.storage.ProfitFileIO;
 import kr.kosa.bowl.util.AbstractFileIO;
@@ -201,6 +202,6 @@ public class Profit implements Serializable {
 
 		return totalOrders.entrySet().stream().sorted((a, b) -> b.getValue() - a.getValue()) // 내림차순 정렬
 				.limit(3) // 상위 3개만 선택
-				.toList();
+				.collect(Collectors.toList());
 	}
 }

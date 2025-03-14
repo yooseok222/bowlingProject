@@ -59,9 +59,9 @@ public class ReviewList implements Serializable {
 		if (reviewList.isEmpty()) {
 			return 0;
 		}
-		
+
 		sortReviewList("createdAt");
-		return reviewList.getFirst().getReviewNum();
+		return reviewList.get(0).getReviewNum();
 	}
 
 	// 리뷰 출력
